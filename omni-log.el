@@ -30,6 +30,23 @@
 ;;; Code:
 
 
+(defun log-message-no-log (message)
+  "Print a message in the loggin area without recording it in the *Messages* buffer."
+  ;; inspired from eldoc
+  ;; §maybe: make a non internal function to reuse as internal
+  (interactive)
+  (let ((message-log-max nil))
+    (message message)))
+
+
+;; §then color. (highligh/bold: ou plus `emphasize')
+
+;; insert color in message: log-message-with-color
+
+;; then specific buffer.
+
+
+;; §see: proposer config avec aliasing des fonctions dans namespace, et advice de message?
 
 (provide 'omni-log)
 ;;; omni-log.el ends here
