@@ -1,4 +1,4 @@
-;;; omni-log.el --- Logging utilities
+;;; omni-log-buffer.el --- Logging utilities
 
 ;; Copyright (C) 2014  Adrien Becchis
 ;; Created:  2014-07-27
@@ -25,31 +25,27 @@
 ;;
 
 ;;; Building Notes:
-;; far too early [and pretentious] to call the 'the long lost logging api' ^^
+;; for now: marker, name, buffer properties
 
 ;;; Code:
 
-(require 'omni-log-buffer)
+(defun log-buffer-p (buffer)
+  "Return t if buffer is an omni-log buffer."
+  ;; could be forged...[§maybe deeper check?]
+  (and (consp buffer)
+       (equal 'log-buffer (car buffer))))
 
-(defun log-message-no-log (message)
-  "Print a message in the loggin area without recording it in the *Messages* buffer."
-  ;; inspired from eldoc
-  ;; §maybe: make a non internal function to reuse as internal
-  (interactive)
-  (let ((message-log-max nil))
-    (message message)))
+(defun make-log-buffer (name &optional properties)
+  "Create a loging buffer NAME and eventual PROPERTIES."
+  ;; §todo: test buffer does not yet exist
+  (let ((buffer (get-buffer-create name)))
+    ;; §todo: ensure read-only
+    (list 'log-buffer name buffer properties)))
 
+;; §throw error? ;§todo: checkomni-buffer -> throw exception
 
-;; §then color. (highligh/bold: ou plus `emphasize')
+;; §todo: wrapper avec une qui encaspule le nom
+;; §todo:d get-log-buffer-or-create
 
-;; insert color in message: log-message-with-color
-
-;; then specific buffer.
-
-
-;; §here: message-to-log-buffer
-
-;; §see: proposer config avec aliasing des fonctions dans namespace, et advice de message?
-
-(provide 'omni-log)
-;;; omni-log.el ends here
+(provide 'omni-log-buffer)
+;;; omni-log-buffer.el ends here
