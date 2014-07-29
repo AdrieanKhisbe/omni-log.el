@@ -31,7 +31,7 @@
 
 (require 'omni-log-buffer)
 
-(defun l-message-no-log (message)
+(defun l-message-no-log (message) ; ¤maybe: rest version (would have to splat it)
   "Print a message in the loggin area without recording it in the *Messages* buffer."
   ;; inspired from eldoc
   ;; §maybe: make a non internal function to reuse as internal
@@ -46,8 +46,25 @@
 
 ;; then specific buffer.
 
+;; §see: level of checying log buffer
 
-;; §here: message-to-log-buffer
+(defun l-message-to-log-buffer (buffer message)
+  ;; §later: evaluate message content now. and enable multi format (format style)
+  (l-append-to-log-buffer (l-check-log-buffer buffer) message)
+  (l-message-no-log message)
+  ;;  message ; ¤see if giving message as return value?
+)
+
+;; §maybe:
+(defun l-append-to-log-buffer (buffer message)
+  ;; §here
+  (message "NO Buffer for now")
+  )
+
+;; ¤test:
+;;(setq a (l-make-log-buffer "*youo*"))
+;; (l-message-to-log-buffer a "toto")
+
 
 ;; §see: proposer config avec aliasing des fonctions dans namespace, et advice de message?
 

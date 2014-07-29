@@ -51,8 +51,10 @@
   "Ensure That LOG-BUFFER is really one.  Throw exception otherwise.  Return the log-buffer"
   (if (l-log-buffer-p log-buffer)
       log-buffer
-    (signal 'wrong-type-argument '("Provided buffer is not a log-buffer")))
-)
+    (signal 'wrong-type-argument '(l-log-buffer-p log-buffer))
+    ;; "Provided buffer is not a log-buffer")
+    ))
+
 ;; ¤note:maybe two way to call to log. registered name, or particular logbuffer. (this checkying function is for that,)
 
 
