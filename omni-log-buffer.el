@@ -50,6 +50,7 @@
 (defun l-log-buffer-p (buffer)
   "Return t if buffer is an omni-log buffer."
   ;; could be forged...[§maybe deeper check?]
+  ;; §bonux: check buffer still alive? if notn maybe replace it?
   (and (consp buffer)
        (equal 'log-buffer (car buffer))))
 

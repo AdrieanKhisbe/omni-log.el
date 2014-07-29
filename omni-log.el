@@ -53,17 +53,20 @@
   (l-append-to-log-buffer (l-check-log-buffer buffer) message)
   (l-message-no-log message)
   ;;  message ; ¤see if giving message as return value?
-)
-
-;; §maybe:
-(defun l-append-to-log-buffer (buffer message)
-  ;; §here
-  (message "NO Buffer for now")
   )
 
+(defun l-append-to-log-buffer (buffer message)
+  (with-current-buffer (l-log-buffer-buffer buffer)
+      ;; §maybe: create a with-current-log-buffer
+    (goto-char (point-max)) ;; ¤note: maybe use some mark if the bottom of the buffer us some text or so
+    (insert message) ;; §todo: call to special formater on message: add timestamp (maybe calling function? (if can be retrieved from namespace))
+    ;; ¤note: message is supposed to be already formated. (-> color empahsize inside should be already done)
+    (insert "\n")
+      ))
+
 ;; ¤test:
-;;(setq a (l-make-log-buffer "*youo*"))
-;; (l-message-to-log-buffer a "toto")
+(setq test-buffer (l-make-log-buffer "*ansible*"))
+(l-message-to-log-buffer test-buffer (propertize "42" 'face 'font-lock-warning-face ))
 
 
 ;; §see: proposer config avec aliasing des fonctions dans namespace, et advice de message?
