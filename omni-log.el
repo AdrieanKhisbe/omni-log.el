@@ -37,6 +37,10 @@
   ;; §maybe: make a non internal function to reuse as internal
   (interactive)
   (let ((message-log-max nil))
+    ;; ¤note: centering, or right alignment should happen here.
+    ;;        but choice to do so is responsability of the buffer.
+    ;;        ¤maybe create another no log padding,whatever, and message-to-log-buffer would dispacth
+    ;;        [object oriented programming where are you when we need you?]
     (message message)))
 
 
@@ -67,6 +71,15 @@
 ;; ¤test:
 (setq test-buffer (l-make-log-buffer "*ansible*"))
 (l-message-to-log-buffer test-buffer (propertize "42" 'face 'font-lock-warning-face ))
+
+;; §idea: add padding, centering functionnality. ¤maybe regroup in some class with all the other formating fonctionnality: color. etc
+;; l-apply-font
+;; ¤see: specific font
+
+;; access to echo area with (get-buffer " *Echo Area 0*")
+;; modif with setq-local.
+;; ¤note: get size of echo area with:
+;; (window-total-width (get-buffer-window  (get-buffer "*Echo Area 0*")))
 
 
 ;; §see: proposer config avec aliasing des fonctions dans namespace, et advice de message?

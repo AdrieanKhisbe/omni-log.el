@@ -29,6 +29,8 @@
 
 ;;; Code:
 
+;; ¤maybe: give a try to EIEIO: http://www.gnu.org/software/emacs/manual/html_mono/eieio.html
+;; ¤see: http://nic.ferrier.me.uk/blog/2012_07/tips-and-tricks-for-emacslisp
 
 ;;; ¤> Constructor
 (defun l-make-log-buffer (name &optional properties)
@@ -68,7 +70,7 @@
 ;;; ¤> accessor functions
 (defun l-log-buffer-name (log-buffer)
   "Get name of LOG-BUFFER"
-  (cadr (l-check-log-buffer log-buffer)))
+  (cadr (l-check-log-buffer log-buffer))) ;; ¤see: cadr said to be comming from the `cl' package. (flycheck warning); myabe use ` nth' instead?
 
 (defun l-log-buffer-buffer (log-buffer)
   "Get buffer of LOG-BUFFER"
@@ -84,8 +86,6 @@
 
 ;; §todo: wrapper avec une qui encaspule le nom
 ;; §todo:d get-log-buffer-or-create
-
-
 
 (provide 'omni-log-buffer)
 ;;; omni-log-buffer.el ends here
