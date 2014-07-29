@@ -29,23 +29,29 @@
 
 ;;; Code:
 
-(defun l-log-buffer-p (buffer)
-  "Return t if buffer is an omni-log buffer."
-  ;; could be forged...[§maybe deeper check?]
-  (and (consp buffer)
-       (equal 'log-buffer (car buffer))))
 
+;;; ¤> Constructor
 (defun l-make-log-buffer (name &optional properties)
   "Create a loging buffer NAME and eventual PROPERTIES."
   ;; §todo: test buffer does not yet exist
   (let* ((buffer (get-buffer-create name))
 	(log-buffer  (list 'log-buffer name buffer properties)))
     log-buffer
-    ;; §todo: ensure read-only
-    ;; §todo: register it
+    ;; §todo: ensure read-only -> make a log-buffer major mode
+    ;; §todo: register it to list of lo-buffer.
     ))
 
-;; §todo: function wrapper.
+;; §todo: function wrapper. ¤? what did I meant?
+
+
+
+;;; ¤> reconnaisseur & type checkying method
+
+(defun l-log-buffer-p (buffer)
+  "Return t if buffer is an omni-log buffer."
+  ;; could be forged...[§maybe deeper check?]
+  (and (consp buffer)
+       (equal 'log-buffer (car buffer))))
 
 (defun l-check-log-buffer (log-buffer)
   "Ensure That LOG-BUFFER is really one.  Throw exception otherwise.  Return the log-buffer"
@@ -56,6 +62,23 @@
     ))
 
 ;; ¤note:maybe two way to call to log. registered name, or particular logbuffer. (this checkying function is for that,)
+
+
+;;; ¤> accessor functions
+(defun l-log-buffer-name (log-buffer)
+  "Get name of LOG-BUFFER"
+  (cadr (l-check-log-buffer log-buffer)))
+
+(defun l-log-buffer-buffer (log-buffer)
+  "Get buffer of LOG-BUFFER"
+  (caddr (l-check-log-buffer log-buffer)))
+
+(defun l-log-buffer-properties (log-buffer)
+  "Get properties of LOG-BUFFER"
+  (cadddr (l-check-log-buffer log-buffer)))
+
+;; §maybe: renaming function
+;; ¤tmp:test (l-log-buffer-properties a)
 
 
 ;; §todo: wrapper avec une qui encaspule le nom
