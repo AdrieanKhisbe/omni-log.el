@@ -29,23 +29,37 @@
 
 ;;; Code:
 
-(defun log-buffer-p (buffer)
+(defun l-log-buffer-p (buffer)
   "Return t if buffer is an omni-log buffer."
   ;; could be forged...[§maybe deeper check?]
   (and (consp buffer)
        (equal 'log-buffer (car buffer))))
 
-(defun make-log-buffer (name &optional properties)
+(defun l-make-log-buffer (name &optional properties)
   "Create a loging buffer NAME and eventual PROPERTIES."
   ;; §todo: test buffer does not yet exist
-  (let ((buffer (get-buffer-create name)))
+  (let* ((buffer (get-buffer-create name))
+	(log-buffer  (list 'log-buffer name buffer properties)))
+    log-buffer
     ;; §todo: ensure read-only
-    (list 'log-buffer name buffer properties)))
+    ;; §todo: register it
+    ))
 
-;; §throw error? ;§todo: checkomni-buffer -> throw exception
+;; §todo: function wrapper.
+
+(defun l-check-log-buffer (log-buffer)
+  "Ensure That LOG-BUFFER is really one.  Throw exception otherwise.  Return the log-buffer"
+  (if (l-log-buffer-p log-buffer)
+      log-buffer
+    (signal 'wrong-type-argument '("Provided buffer is not a log-buffer")))
+)
+;; ¤note:maybe two way to call to log. registered name, or particular logbuffer. (this checkying function is for that,)
+
 
 ;; §todo: wrapper avec une qui encaspule le nom
 ;; §todo:d get-log-buffer-or-create
+
+
 
 (provide 'omni-log-buffer)
 ;;; omni-log-buffer.el ends here

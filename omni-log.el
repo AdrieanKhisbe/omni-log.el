@@ -31,7 +31,7 @@
 
 (require 'omni-log-buffer)
 
-(defun log-message-no-log (message)
+(defun l-message-no-log (message)
   "Print a message in the loggin area without recording it in the *Messages* buffer."
   ;; inspired from eldoc
   ;; §maybe: make a non internal function to reuse as internal
