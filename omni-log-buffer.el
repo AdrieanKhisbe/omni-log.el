@@ -36,8 +36,11 @@
 ;;; ¤> Constructor
 (defun l-make-log-buffer (name &optional properties)
   "Create a loging buffer NAME and eventual PROPERTIES."
+  ;; §TODO! c'est le buffer qui est wrappé des quotes. §here. [éventuellement option pour bypass]
+
   ;; §todo: test buffer does not yet exist
-  ;; ¤maybe: prceise this is intern function?
+  ;; ¤maybe: precise this is intern function?
+  ;; ¤maybe: build properties from keyword at this level?
   (let* ((buffer (get-buffer-create name))
 	(log-buffer  (list 'log-buffer name buffer properties)))
     log-buffer
@@ -88,6 +91,12 @@
 
 ;; §todo: wrapper avec une qui encaspule le nom
 ;; §todo:d get-log-buffer-or-create
+
+
+;; ¤> saving fonctionnality
+;; §later: (defcustom l-default-saving-interval 5
+;; §see: how to handle this. (determine when to save)
+;; §this shouuld go in the major mode to create! [create file.]
 
 (provide 'omni-log-buffer)
 ;;; omni-log-buffer.el ends here
