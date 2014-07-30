@@ -26,6 +26,7 @@
 
 ;;; Building Notes:
 ;; far too early [and pretentious] to call the 'the long lost logging api' ^^
+;; §IMP: DETERMINE EXTERIOR API YOU WANNA, and INDIVIDUAL COMPONENTS!!
 
 ;;; Code:
 
@@ -50,18 +51,29 @@
 
 ;; then specific buffer.
 
-;; §see: level of checying log buffer
+;; §see: level of checking log buffer. (si endessous niveau courrant insérer dans buffer mais pas afficher?)
 
-(defun l-create-logger (name)
-  "DOCSTRING §TODO" ;;§other param
+;;; ¤mmmmm: refactor: a logger should be a fonction, that will call the append-to-log buffer,
+;; with some captured option (leading string, where it come from, and so on.)
+;; keyword to signal intensity-> l-log-/name/ :info "blable"
+;; find name to differentiate this [¤so rename this and create function]
+(defun l-create-logger (name &optional filename)
+  "DOCSTRING §TODO"
+  ;;§other param: filename, saving frequenci, etc.
+  ;; ¤see if retrive them just as name
+  ;; §keywordp
+
+  ;; §maybe: create holding var and functions?
+  ;; fset to set a variable!!
   (interactive)
   (let ((full-name (concat "*" name "*")))
   ;; §todo:then chack no name conflict
-    (l-make-log-buffer full-name)
+    (l-make-log-buffer full-name  `(filename filename))
     ;; §maybe register it to variable? name-logger??
     ;; also send it back
 ))
 
+;; l-log to current.
 ;; §later: to logger by name?
 (defun l-message-to-logger (logger message)
   ;; §later: evaluate message content now. and enable multi format (format style)
