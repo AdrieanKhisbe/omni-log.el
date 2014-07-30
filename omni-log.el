@@ -52,15 +52,26 @@
 
 ;; §see: level of checying log buffer
 
-(defun l-message-to-log-buffer (buffer message)
+(defun l-create-logger (name)
+  "DOCSTRING §TODO" ;;§other param
+  (interactive)
+  (let ((full-name (concat "*" name "*")))
+  ;; §todo:then chack no name conflict
+    (l-make-log-buffer full-name)
+    ;; §maybe register it to variable? name-logger??
+    ;; also send it back
+))
+
+;; §later: to logger by name?
+(defun l-message-to-logger (logger message)
   ;; §later: evaluate message content now. and enable multi format (format style)
-  (l-append-to-log-buffer (l-check-log-buffer buffer) message)
+  (l-append-to-logger (l-check-log-buffer logger) message)
   (l-message-no-log message)
   ;;  message ; ¤see if giving message as return value?
   )
 
-(defun l-append-to-log-buffer (buffer message)
-  (with-current-buffer (l-log-buffer-buffer buffer)
+(defun l-append-to-logger (logger message)
+  (with-current-buffer (l-log-buffer-buffer logger)
       ;; §maybe: create a with-current-log-buffer
     (goto-char (point-max)) ;; ¤note: maybe use some mark if the bottom of the buffer us some text or so
     (insert message) ;; §todo: call to special formater on message: add timestamp (maybe calling function? (if can be retrieved from namespace))
@@ -69,8 +80,9 @@
       ))
 
 ;; ¤test:
-(setq test-buffer (l-make-log-buffer "*ansible*"))
-(l-message-to-log-buffer test-buffer (propertize "42" 'face 'font-lock-warning-face ))
+(setq test-logger (l-create-logger "ansible"))
+(l-message-to-logger test-logger (propertize "42" 'face 'font-lock-warning-face ))
+
 
 ;; §idea: add padding, centering functionnality. ¤maybe regroup in some class with all the other formating fonctionnality: color. etc
 ;; l-apply-font

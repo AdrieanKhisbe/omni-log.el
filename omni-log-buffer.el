@@ -32,10 +32,12 @@
 ;; ¤maybe: give a try to EIEIO: http://www.gnu.org/software/emacs/manual/html_mono/eieio.html
 ;; ¤see: http://nic.ferrier.me.uk/blog/2012_07/tips-and-tricks-for-emacslisp
 
+;; ¤maybe also rename intern to ogger.
 ;;; ¤> Constructor
 (defun l-make-log-buffer (name &optional properties)
   "Create a loging buffer NAME and eventual PROPERTIES."
   ;; §todo: test buffer does not yet exist
+  ;; ¤maybe: prceise this is intern function?
   (let* ((buffer (get-buffer-create name))
 	(log-buffer  (list 'log-buffer name buffer properties)))
     log-buffer
