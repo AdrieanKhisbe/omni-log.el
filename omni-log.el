@@ -26,6 +26,7 @@
 
 ;;; Building Notes:
 ;; far too early [and pretentious] to call the 'the long lost logging api' ^^
+;; §IMP: DETERMINE EXTERIOR API YOU WANNA, and INDIVIDUAL COMPONENTS!!
 
 ;;; Code:
 
@@ -42,7 +43,6 @@
     ;;        ¤maybe create another no log padding,whatever, and message-to-log-buffer would dispacth
     ;;        [object oriented programming where are you when we need you?]
     (message message)))
-
 
 ;; §then color. (highligh/bold: ou plus `emphasize')
 
@@ -63,13 +63,14 @@
   ;; §keywordp
 
   ;; §maybe: create holding var and functions?
+  ;; fset to set a variable!!
   (interactive)
   (let ((full-name (concat "*" name "*")))
   ;; §todo:then chack no name conflict
     (l-make-log-buffer full-name  `(filename filename))
     ;; §maybe register it to variable? name-logger??
     ;; also send it back
-))
+    ))
 
 ;; l-log to current.
 ;; §later: to logger by name?
