@@ -74,20 +74,42 @@
   (interactive "sName of the logger: ")
   ;;§todosanitze name?
   ;; §todo:then check no name conflict
-  (let* ((full-name (concat "*" name "*"))
-	(log-buffer (l-make-log-buffer full-name `(filename ,filename))))
+  (let ((log-buffer (l-make-log-buffer name `(filename ,filename))))
     ;; §maybe register it to variable? name-logger??
     ;; also send it back
      (ht-set! l-logger-hash name log-buffer)
      log-buffer))
 
-;; l-log to current.
+;; §todo: make also a get function
+(defun l-create-logging-function (logger)
+  ;; §for now unique
+  ;;§why macro?
+  (if  (l-log-buffer-p logger)
+       ;;§todo: check not set!
+      (l--make-logging-function logger) ;§see how to get symbol
+    (warn "%s is not a logger!"  logger)))
+
+(defmacro l--make-logging-function (logger)
+;; §todo: warn should not be used
+  (let ((name (intern (concat "log-" (l-log-buffer-name (eval logger))))))
+    `(defun ,name
+       (message) ;§todo:doc
+       (interactive)
+       (l-message-to-logger ,logger message))))
+;; §maybe had warning if already defined
+;; fboundp check!!
+ ;; §see: why ad to creat two?
+
+;; §maybe? l-log to current. -> set current or latest register?
+
 ;; §later: to logger by name?
 (defun log (logger-or-name message)
   ;; §doc
   (if (l-log-buffer-p logger-or-name)
       (l-message-to-logger logger-or-name message)
-    (error "retrive logger by name notyet implemented.")))
+    (let ((logger (ht-get l-logger-hash logger-or-name)))
+      (if logger (l-message-to-logger logger message)
+	(warn "There is no logger of name %s." logger-or-name)))))
 
 (defun l-message-to-logger (logger message)
   ;; §later: evaluate message content now. and enable multi format (format style)

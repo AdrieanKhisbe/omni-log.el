@@ -41,7 +41,7 @@
   ;; §todo: test buffer does not yet exist
   ;; ¤maybe: precise this is intern function?
   ;; ¤maybe: build properties from keyword at this level?
-  (let* ((buffer (get-buffer-create name))
+  (let* ((buffer (get-buffer-create  (concat "*" name "*")))
 	(log-buffer  (list 'log-buffer name buffer properties)))
     log-buffer
     ;; §todo: ensure read-only -> make a log-buffer major mode
@@ -65,7 +65,8 @@
   "Ensure That LOG-BUFFER is really one.  Throw exception otherwise.  Return the log-buffer"
   (if (l-log-buffer-p log-buffer)
       log-buffer
-    (signal 'wrong-type-argument '(l-log-buffer-p log-buffer))
+    (signal 'wrong-type-argument '(l-log-buffer-p log-buffer))
+
     ;; "Provided buffer is not a log-buffer")
     ))
 
