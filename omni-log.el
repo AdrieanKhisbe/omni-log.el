@@ -30,6 +30,7 @@
 
 ;;; Code:
 
+(require 'ht) ;§maybe start with alist not to have dependancy
 (require 'omni-log-buffer)
 
 (defun l-message-no-log (message) ; ¤maybe: rest version (would have to splat it)
@@ -50,9 +51,15 @@
 
 ;; then specific buffer.
 
-;; §see: level of checking log buffer. (si endessous niveau courrant insérer dans buffer mais pas afficher?)
 
-;;; ¤mmmmm: refactor: a logger should be a fonction, that will call the append-to-log buffer,
+;; §see: level of checking log buffer. (si endessous niveau courrant insérer dans buffer mais pas afficher?)
+;;        high level check. for input for user, extrenal api.
+
+
+(defvar l-logger-hash (ht) ;§maybe create Message equivalent?
+  "Logger hash containing associating between name and logger.")
+
+;;; ¤mmmmm: refactor: a logger should be a fonction, that will call the append-to-log buffer, : différentier non?
 ;; with some captured option (leading string, where it come from, and so on.)
 ;; keyword to signal intensity-> l-log-/name/ :info "blable"
 ;; find name to differentiate this [¤so rename this and create function]
@@ -64,16 +71,24 @@
 
   ;; §maybe: create holding var and functions?
   ;; fset to set a variable!!
-  (interactive)
-  (let ((full-name (concat "*" name "*")))
-  ;; §todo:then chack no name conflict
-    (l-make-log-buffer full-name  `(filename filename))
+  (interactive "sName of the logger: ")
+  ;;§todosanitze name?
+  ;; §todo:then check no name conflict
+  (let* ((full-name (concat "*" name "*"))
+	(log-buffer (l-make-log-buffer full-name `(filename ,filename))))
     ;; §maybe register it to variable? name-logger??
     ;; also send it back
-    ))
+     (ht-set! l-logger-hash name log-buffer)
+     log-buffer))
 
 ;; l-log to current.
 ;; §later: to logger by name?
+(defun log (logger-or-name message)
+  ;; §doc
+  (if (l-log-buffer-p logger-or-name)
+      (l-message-to-logger logger-or-name message)
+    (error "retrive logger by name notyet implemented.")))
+
 (defun l-message-to-logger (logger message)
   ;; §later: evaluate message content now. and enable multi format (format style)
   (l-append-to-logger (l-check-log-buffer logger) message)
