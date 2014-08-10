@@ -34,21 +34,17 @@
 
 ;; ¤maybe also rename intern to ogger.
 ;;; ¤> Constructor
-(defun l-make-log-buffer (name &optional properties)
-  "Create a loging buffer NAME and eventual PROPERTIES."
-  ;; §TODO! c'est le buffer qui est wrappé des quotes. §here. [éventuellement option pour bypass]
-
-  ;; §todo: test buffer does not yet exist
+(defun l--make-log-buffer (name &optional properties)
+  "Build a loging buffer object with NAME and eventual PROPERTIES."
   ;; ¤maybe: precise this is intern function?
   ;; ¤maybe: build properties from keyword at this level?
   (let* ((buffer (get-buffer-create  (concat "*" name "*")))
 	(log-buffer  (list 'log-buffer name buffer properties)))
-    log-buffer
-    ;; §todo: ensure read-only -> make a log-buffer major mode
-    ;; §todo: register it to list of lo-buffer.
+    (with-current-buffer log-buffer
+      (read-only-mode) ;; §later: log-buffer major mode
+      )
+    log-buffer ; renvoit le buffer
     ))
-
-;; §todo: function wrapper. ¤? what did I meant?
 
 
 

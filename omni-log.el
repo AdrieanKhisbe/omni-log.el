@@ -26,7 +26,11 @@
 
 ;;; Building Notes:
 ;; far too early [and pretentious] to call the 'the long lost logging api' ^^
+
+
 ;; §IMP: DETERMINE EXTERIOR API YOU WANNA, and INDIVIDUAL COMPONENTS!!
+;; §todo: see terminology
+;; find name to differentiate make/create [¤so rename this and create function]
 
 ;;; Code:
 
@@ -34,10 +38,8 @@
 (require 'omni-log-buffer)
 
 (defun l-message-no-log (message) ; ¤maybe: rest version (would have to splat it)
-  "Print a message in the loggin area without recording it in the *Messages* buffer."
+  "Print a MESSAGE in the loggin area without recording it in the *Messages* buffer."
   ;; inspired from eldoc
-  ;; §maybe: make a non internal function to reuse as internal
-  (interactive)
   (let ((message-log-max nil))
     ;; ¤note: centering, or right alignment should happen here.
     ;;        but choice to do so is responsability of the buffer.
@@ -49,81 +51,66 @@
 
 ;; insert color in message: log-message-with-color
 
-;; then specific buffer.
-
-
-;; §see: level of checking log buffer. (si endessous niveau courrant insérer dans buffer mais pas afficher?)
-;;        high level check. for input for user, extrenal api.
-
-
 (defvar l-logger-hash (ht) ;§maybe create Message equivalent?
   "Logger hash containing associating between name and logger.")
 
-;;; ¤mmmmm: refactor: a logger should be a fonction, that will call the append-to-log buffer, : différentier non?
-;; with some captured option (leading string, where it come from, and so on.)
-;; keyword to signal intensity-> l-log-/name/ :info "blable"
-;; find name to differentiate this [¤so rename this and create function]
+;;; ¤idea: keyword to signal intensity-> l-log-/name/ :info "blable"
 (defun l-create-logger (name &optional filename)
-  "DOCSTRING §TODO"
+  "Create and return a logger with given NAME
+The logger is both registered and returned to be eventually asigned to a variable.
+Warning will be issued if a logger with same NAME already exists"
   ;;§other param: filename, saving frequenci, etc.
-  ;; ¤see if retrive them just as name
   ;; §keywordp
-
-  ;; §maybe: create holding var and functions?
-  ;; fset to set a variable!!
+  ;; §maybe: create holding var and functions? [maybe at a higher level?]
   (interactive "sName of the logger: ")
   ;;§todosanitze name?
   ;; §todo:then check no name conflict
-  (let ((log-buffer (l-make-log-buffer name `(filename ,filename))))
-    ;; §maybe register it to variable? name-logger??
-    ;; also send it back
-     (ht-set! l-logger-hash name log-buffer)
-     log-buffer))
+  (if (l-get-logger name)
+      (let ((log-buffer (l--make-log-buffer name `(filename ,filename))))
+	(ht-set! l-logger-hash name log-buffer)
+	log-buffer)
+    (warn "A logger named %s already exists")))
 
-;; §todo: make also a get function
+(defun l-get-logger (name)
+  "Send back the eventual buffer with specified NAME"
+  (ht-get l-logger-hash name))
+
 (defun l-create-logging-function (logger)
+  "Create a function to directly append to LOGGER the given message.
+This function would be named log- followed by logger name"
   ;; §for now unique
-  ;;§why macro?
   (if  (l-log-buffer-p logger)
        ;;§todo: check not set!
       (let ((name (concat "log-" (l-log-buffer-name  logger))))
 	(if (fboundp (intern name))
 	    (warn "%s logging function has already been made!" name)
-	  (progn (warn "%s" name)
-		 (warn "%s" (type-of name))
-		 (l--make-logging-function logger name)))) ;§see how to get symbol
-    (warn "%s is not a logger!"  logger)))
-
+	  (l--make-logging-function logger name)))
+    (warn "%s is not a logger!" logger)))
 
 (defmacro l--make-logging-function (log-buffer fname)
-  (warn "%s" fname)
-  (warn "%s" (eval fname))
-  (warn "%s" log-buffer)
-  (warn "%s" (symbol-value log-buffer ))
-  (warn "%s" (eval log-buffer))
-
-  `(defun ,(intern (eval fname)) ;§HERE WHTAAY IZTE4µlgusqej rlo_:çmp)
+  "Macro to create the logging function attached to a LOG-BUFFER.
+This is not inteded for users."
+  ;; ¤note: beware macro name conflict
+  `(defun ,(intern (eval fname))
      (message) ;§todo:doc
      (interactive)
      (l-message-to-logger ',(symbol-value log-buffer) message)))
-;; §maybe had warning if already defined
-;; fboundp check!!
- ;; §see: why ad to creat two?
-
-;;§notbeware name w
 
 ;; §maybe? l-log to current. -> set current or latest register?
 
-;; §later: to logger by name?
+
 (defun log (logger-or-name message)
-  ;; §doc
+  "Log given MESSAGE to specified LOGGER-OR-NAME.
+LOGGER-OR-NAME is either a log-buffer or the name of the existing log-buffer"
   (if (l-log-buffer-p logger-or-name)
       (l-message-to-logger logger-or-name message)
-    (let ((logger (ht-get l-logger-hash logger-or-name)))
-      (if logger (l-message-to-logger logger message)
+    (let ((logger (l-get-logger logger-or-name)))
+      (if logger
+	  (l-message-to-logger logger message)
 	(warn "There is no logger of name %s." logger-or-name)))))
 
 (defun l-message-to-logger (logger message)
+  "Display MESSAGE to the Echo area and append it the given LOGGER"
   ;; §later: evaluate message content now. and enable multi format (format style)
   (l-append-to-logger (l-check-log-buffer logger) message)
   (l-message-no-log message)
@@ -131,6 +118,7 @@
   )
 
 (defun l-append-to-logger (logger message)
+  "Add MESSAGE to specified LOGGER."
   (with-current-buffer (l-log-buffer-buffer logger)
       ;; §maybe: create a with-current-log-buffer
     (goto-char (point-max)) ;; ¤note: maybe use some mark if the bottom of the buffer us some text or so
@@ -148,9 +136,9 @@
 ;; l-apply-font
 ;; ¤see: specific font
 
-;; access to echo area with (get-buffer " *Echo Area 0*")
+;; ¤note: access to echo area with (get-buffer " *Echo Area 0*")
 ;; modif with setq-local.
-;; ¤note: get size of echo area with:
+;;  get size of echo area with:
 ;; (window-total-width (get-buffer-window  (get-buffer "*Echo Area 0*")))
 
 
