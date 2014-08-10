@@ -86,19 +86,31 @@
   ;;§why macro?
   (if  (l-log-buffer-p logger)
        ;;§todo: check not set!
-      (l--make-logging-function logger) ;§see how to get symbol
+      (let ((name (concat "log-" (l-log-buffer-name  logger))))
+	(if (fboundp (intern name))
+	    (warn "%s logging function has already been made!" name)
+	  (progn (warn "%s" name)
+		 (warn "%s" (type-of name))
+		 (l--make-logging-function logger name)))) ;§see how to get symbol
     (warn "%s is not a logger!"  logger)))
 
-(defmacro l--make-logging-function (logger)
-;; §todo: warn should not be used
-  (let ((name (intern (concat "log-" (l-log-buffer-name (eval logger))))))
-    `(defun ,name
-       (message) ;§todo:doc
-       (interactive)
-       (l-message-to-logger ,logger message))))
+
+(defmacro l--make-logging-function (log-buffer fname)
+  (warn "%s" fname)
+  (warn "%s" (eval fname))
+  (warn "%s" log-buffer)
+  (warn "%s" (symbol-value log-buffer ))
+  (warn "%s" (eval log-buffer))
+
+  `(defun ,(intern (eval fname)) ;§HERE WHTAAY IZTE4µlgusqej rlo_:çmp)
+     (message) ;§todo:doc
+     (interactive)
+     (l-message-to-logger ',(symbol-value log-buffer) message)))
 ;; §maybe had warning if already defined
 ;; fboundp check!!
  ;; §see: why ad to creat two?
+
+;;§notbeware name w
 
 ;; §maybe? l-log to current. -> set current or latest register?
 
