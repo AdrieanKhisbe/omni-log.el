@@ -80,22 +80,25 @@ Warning will be issued if a logger with same NAME already exists"
   "Create a function to directly append to LOGGER the given message.
 This function would be named log- followed by logger name"
   ;; §for now unique
+  (message "type: %s" (type-of log))
   (if (l-log-p log)
        ;;§todo: check not set!
       (let ((name (concat "log-" (l-log-name log))))
 	(if (fboundp (intern name))
 	    (warn "%s logging function has already been made!" name)
-	  (l--make-loger log name)))
+	  (l--make-logger log name)))
     (warn "%s is not a log!" log)))
 
-(defmacro l--make-loger (log fname)
-  "Macro to create the logging function attached to a LOG.
+(defmacro l--make-logger (-log fname)
+  "Macro to create the logging function attached to a -LOG.
 This is not inteded for users."
-  ;; ¤note: beware macro name conflict
+  ;; ¤note: beware macro name conflict: var name must be different from the one used in log.
   `(defun ,(intern (eval fname))
      (message) ;§todo:doc
      (interactive)
-     (l-message-to-log ',(symbol-value log) message)))
+     (l--append-to-log ',(symbol-value -log) message)
+     (l-message-no-log message))) ; ¤note: maybe subst?
+;;; ¤note: inlined, without check
 
 ;; §maybe? l-log to current. -> set current or latest register?
 
@@ -113,13 +116,14 @@ LOG-OR-NAME is either a log or the name of the existing log"
 (defun l-message-to-log (log message)
   "Display MESSAGE to the Echo area and append it the given LOG"
   ;; §later: evaluate message content now. and enable multi format (format style)
-  (l-append-to-log (l-check-log log) message)
+  (l--append-to-log (l-check-log log) message)
   (l-message-no-log message) ; ¤note: maybe subst?
-  ;;  message ; ¤see if giving message as return value?
+  ;;  message ; ¤see if giving message as return value? [latter when evaluation occur inside? &rest]
   )
 
-(defun l-append-to-log (log message)
+(defun l--append-to-log (log message)
   "Add MESSAGE to specified LOG."
+  ;; ¤note: type checking supposed to be done at a higher level
   (with-current-buffer (l-log-buffer log)
     ;; §maybe: create a with-current-log
     (goto-char (point-max)) ;; ¤note: maybe use some mark if the bottom of the buffer us some text or so
