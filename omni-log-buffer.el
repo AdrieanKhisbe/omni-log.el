@@ -41,8 +41,7 @@
   (let* ((buffer (get-buffer-create  (concat "*" name "*")))
 	(log (list 'log name buffer properties)))
     (with-current-buffer buffer
-      ;;(read-only-mode) ;; §later: log major mode
-      ;; ¤note: append must overridde : save-current-buffer: Buffer is read-only: #<buffer *ansible*>
+      (read-only-mode) ; §later: log major mode
       )
     log ; renvoit le log
     ))

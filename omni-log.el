@@ -31,7 +31,7 @@
 ;; §IMP: DETERMINE EXTERIOR API YOU WANNA, and INDIVIDUAL COMPONENTS!!
 ;; §todo: see terminology
 ;; find name to differentiate make/create [¤so rename this and create function]
-;; §TODO: make or create higher level????????
+;; §TODO: make or create: create idea, conceptual. make: realise
 
 ;;; Code:
 
@@ -123,13 +123,20 @@ LOG-OR-NAME is either a log or the name of the existing log"
   (with-current-buffer (l-log-buffer log)
     ;; §maybe: create a with-current-log
     (goto-char (point-max)) ;; ¤note: maybe use some mark if the bottom of the buffer us some text or so
-    (insert message) ;; §todo: call to special formater on message: add timestamp (maybe calling function? (if can be retrieved from namespace))
-    ;; ¤note: message is supposed to be already formated. (-> color empahsize inside should be already done)
-    (insert "\n")))
+    (let ((inhibit-read-only t))
+      (insert message)
+      ;; §todo: call to special formater on message: add timestamp (maybe calling function? (if can be retrieved from namespace))
+      ;; ¤note: message is supposed to be already formated. (-> color empahsize inside should be already done)
+    (insert "\n"))))
+
+
+;; §todo: mayeb wmessage + qmessage (or t transient)
 
 ;; ¤test:
 (setq test-log (l-create-log "ansible"))
 (l-message-to-log test-log (propertize "42" 'face 'font-lock-warning-face))
+(l-create-logger test-log)
+(log-ansible (propertize "Working!" 'face 'font-lock-type-face))
 
 ;; §idea: add padding, centering functionnality. ¤maybe regroup in some class with all the other formating fonctionnality: color. etc
 ;; l-apply-font
@@ -140,6 +147,7 @@ LOG-OR-NAME is either a log or the name of the existing log"
 ;;  get size of echo area with:
 ;; (window-total-width (get-buffer-window  (get-buffer "*Echo Area 0*")))
 
+;; §note: not accessible with C-x b
 
 ;; §see: proposer config avec aliasing des fonctions dans namespace, et advice de message?
 
