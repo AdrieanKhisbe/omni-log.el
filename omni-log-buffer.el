@@ -34,60 +34,58 @@
 
 ;; ¤maybe also rename intern to ogger.
 ;;; ¤> Constructor
-(defun l--make-log-buffer (name &optional properties)
+(defun l--make-log (name &optional properties)
   "Build a loging buffer object with NAME and eventual PROPERTIES."
   ;; ¤maybe: precise this is intern function?
   ;; ¤maybe: build properties from keyword at this level?
   (let* ((buffer (get-buffer-create  (concat "*" name "*")))
-	(log-buffer  (list 'log-buffer name buffer properties)))
-    (with-current-buffer log-buffer
-      (read-only-mode) ;; §later: log-buffer major mode
+	(log (list 'log name buffer properties)))
+    (with-current-buffer buffer
+      ;;(read-only-mode) ;; §later: log major mode
+      ;; ¤note: append must overridde : save-current-buffer: Buffer is read-only: #<buffer *ansible*>
       )
-    log-buffer ; renvoit le buffer
+    log ; renvoit le log
     ))
 
 
 
 ;;; ¤> reconnaisseur & type checkying method
 
-(defun l-log-buffer-p (buffer)
+(defun l-log-p (buffer) ; ¤note: maybe rename logp?
   "Return t if buffer is an omni-log buffer."
   ;; could be forged...[§maybe deeper check?]
   ;; §bonux: check buffer still alive? if notn maybe replace it?
   (and (consp buffer)
-       (equal 'log-buffer (car buffer))))
+       (equal 'log (car buffer))))
 
-(defun l-check-log-buffer (log-buffer)
-  "Ensure That LOG-BUFFER is really one.  Throw exception otherwise.  Return the log-buffer"
-  (if (l-log-buffer-p log-buffer)
-      log-buffer
-    (signal 'wrong-type-argument '(l-log-buffer-p log-buffer))
-
-    ;; "Provided buffer is not a log-buffer")
-    ))
+(defun l-check-log (log)
+  "Ensure That LOG is really one.  Throw exception otherwise.  Return the log"
+  (if (l-log-p log)
+      log
+    (signal 'wrong-type-argument '(l-log-p log)))) ; ¤check message: maybe send `type-of'
+;; "Provided buffer is not a log")
 
 ;; ¤note:maybe two way to call to log. registered name, or particular logbuffer. (this checkying function is for that,)
 
-
 ;;; ¤> accessor functions
-(defun l-log-buffer-name (log-buffer)
-  "Get name of LOG-BUFFER"
-  (cadr (l-check-log-buffer log-buffer))) ;; ¤see: cadr said to be comming from the `cl' package. (flycheck warning); myabe use ` nth' instead?
+(defun l-log-name (log)
+  "Get name of LOG"
+  (cadr (l-check-log log)))
+;; ¤todo: cadr said to be comming from the `cl' package. (flycheck warning); myabe use ` nth' instead?
 
-(defun l-log-buffer-buffer (log-buffer)
-  "Get buffer of LOG-BUFFER"
-  (caddr (l-check-log-buffer log-buffer)))
+(defun l-log-buffer (log)
+  "Get buffer of LOG"
+  (caddr (l-check-log log)))
 
-(defun l-log-buffer-properties (log-buffer)
-  "Get properties of LOG-BUFFER"
-  (cadddr (l-check-log-buffer log-buffer)))
+(defun l-log-properties (log)
+  "Get properties of LOG"
+  (cadddr (l-check-log log)))
 
 ;; §maybe: renaming function
-;; ¤tmp:test (l-log-buffer-properties a)
-
+;; ¤tmp:test (l-log-properties a)
 
 ;; §todo: wrapper avec une qui encaspule le nom
-;; §todo:d get-log-buffer-or-create
+;; §todo:d get-log-or-create
 
 
 ;; ¤> saving fonctionnality

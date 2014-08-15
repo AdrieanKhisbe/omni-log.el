@@ -31,6 +31,7 @@
 ;; §IMP: DETERMINE EXTERIOR API YOU WANNA, and INDIVIDUAL COMPONENTS!!
 ;; §todo: see terminology
 ;; find name to differentiate make/create [¤so rename this and create function]
+;; §TODO: make or create higher level????????
 
 ;;; Code:
 
@@ -43,7 +44,7 @@
   (let ((message-log-max nil))
     ;; ¤note: centering, or right alignment should happen here.
     ;;        but choice to do so is responsability of the buffer.
-    ;;        ¤maybe create another no log padding,whatever, and message-to-log-buffer would dispacth
+    ;;        ¤maybe create another no log padding,whatever, and message-to-log would dispacth
     ;;        [object oriented programming where are you when we need you?]
     (message message)))
 
@@ -51,86 +52,84 @@
 
 ;; insert color in message: log-message-with-color
 
-(defvar l-logger-hash (ht) ;§maybe create Message equivalent?
+(defvar l-log-index (ht) ; §maybe create Message equivalent? ¤maybe: alist
   "Logger hash containing associating between name and logger.")
 
 ;;; ¤idea: keyword to signal intensity-> l-log-/name/ :info "blable"
-(defun l-create-logger (name &optional filename)
-  "Create and return a logger with given NAME
-The logger is both registered and returned to be eventually asigned to a variable.
+(defun l-create-log (name &optional filename)
+  "Create and return a log with given NAME
+The log is both registered and returned to be eventually asigned to a variable.
 Warning will be issued if a logger with same NAME already exists"
   ;;§other param: filename, saving frequenci, etc.
   ;; §keywordp
   ;; §maybe: create holding var and functions? [maybe at a higher level?]
-  (interactive "sName of the logger: ")
+  (interactive "sName of the log: ")
   ;;§todosanitze name?
   ;; §todo:then check no name conflict
-  (if (l-get-logger name)
-      (let ((log-buffer (l--make-log-buffer name `(filename ,filename))))
-	(ht-set! l-logger-hash name log-buffer)
-	log-buffer)
-    (warn "A logger named %s already exists")))
+  (if (equal nil (l-get-log name)) ;¤hack
+      (let ((log (l--make-log name `(filename ,filename))))
+	(ht-set! l-log-index name log)
+	log)
+    (message "A log named %s already exists: %s" name (l-get-log name))))
 
-(defun l-get-logger (name)
+(defun l-get-log (name)
   "Send back the eventual buffer with specified NAME"
-  (ht-get l-logger-hash name))
+  (ht-get l-log-index name))
 
-(defun l-create-logging-function (logger)
+(defun l-create-logger (log)
   "Create a function to directly append to LOGGER the given message.
 This function would be named log- followed by logger name"
   ;; §for now unique
-  (if  (l-log-buffer-p logger)
+  (if (l-log-p log)
        ;;§todo: check not set!
-      (let ((name (concat "log-" (l-log-buffer-name  logger))))
+      (let ((name (concat "log-" (l-log-name log))))
 	(if (fboundp (intern name))
 	    (warn "%s logging function has already been made!" name)
-	  (l--make-logging-function logger name)))
-    (warn "%s is not a logger!" logger)))
+	  (l--make-loger log name)))
+    (warn "%s is not a log!" log)))
 
-(defmacro l--make-logging-function (log-buffer fname)
-  "Macro to create the logging function attached to a LOG-BUFFER.
+(defmacro l--make-loger (log fname)
+  "Macro to create the logging function attached to a LOG.
 This is not inteded for users."
   ;; ¤note: beware macro name conflict
   `(defun ,(intern (eval fname))
      (message) ;§todo:doc
      (interactive)
-     (l-message-to-logger ',(symbol-value log-buffer) message)))
+     (l-message-to-log ',(symbol-value log) message)))
 
 ;; §maybe? l-log to current. -> set current or latest register?
 
 
-(defun log (logger-or-name message)
-  "Log given MESSAGE to specified LOGGER-OR-NAME.
-LOGGER-OR-NAME is either a log-buffer or the name of the existing log-buffer"
-  (if (l-log-buffer-p logger-or-name)
-      (l-message-to-logger logger-or-name message)
-    (let ((logger (l-get-logger logger-or-name)))
-      (if logger
-	  (l-message-to-logger logger message)
-	(warn "There is no logger of name %s." logger-or-name)))))
+(defun log (log-or-name message)
+  "Log given MESSAGE to specified LOG-OR-NAME.
+LOG-OR-NAME is either a log or the name of the existing log"
+  (if (l-log-p log-or-name)
+      (l-message-to-log log-or-name message)
+    (let ((log (l-get-log log-or-name)))
+      (if log
+	  (l-message-to-log log message)
+	(warn "There is no log of name %s." log-or-name)))))
 
-(defun l-message-to-logger (logger message)
-  "Display MESSAGE to the Echo area and append it the given LOGGER"
+(defun l-message-to-log (log message)
+  "Display MESSAGE to the Echo area and append it the given LOG"
   ;; §later: evaluate message content now. and enable multi format (format style)
-  (l-append-to-logger (l-check-log-buffer logger) message)
-  (l-message-no-log message)
+  (l-append-to-log (l-check-log log) message)
+  (l-message-no-log message) ; ¤note: maybe subst?
   ;;  message ; ¤see if giving message as return value?
   )
 
-(defun l-append-to-logger (logger message)
-  "Add MESSAGE to specified LOGGER."
-  (with-current-buffer (l-log-buffer-buffer logger)
-      ;; §maybe: create a with-current-log-buffer
+(defun l-append-to-log (log message)
+  "Add MESSAGE to specified LOG."
+  (with-current-buffer (l-log-buffer log)
+    ;; §maybe: create a with-current-log
     (goto-char (point-max)) ;; ¤note: maybe use some mark if the bottom of the buffer us some text or so
     (insert message) ;; §todo: call to special formater on message: add timestamp (maybe calling function? (if can be retrieved from namespace))
     ;; ¤note: message is supposed to be already formated. (-> color empahsize inside should be already done)
-    (insert "\n")
-      ))
+    (insert "\n")))
 
 ;; ¤test:
-(setq test-logger (l-create-logger "ansible"))
-(l-message-to-logger test-logger (propertize "42" 'face 'font-lock-warning-face ))
-
+(setq test-log (l-create-log "ansible"))
+(l-message-to-log test-log (propertize "42" 'face 'font-lock-warning-face))
 
 ;; §idea: add padding, centering functionnality. ¤maybe regroup in some class with all the other formating fonctionnality: color. etc
 ;; l-apply-font
