@@ -3,6 +3,7 @@
 ;; Copyright (C) 2014  Adrien Becchis
 ;; Created:  2014-07-27
 ;; Version: 0.1
+;; §todo: URL
 
 ;; Author: Adrien Becchis <adriean.khisbe@live.fr>
 ;; Keywords: convenience, languages, tools
@@ -22,7 +23,7 @@
 
 ;;; Commentary:
 
-;;
+;; §todo
 
 ;;; Building Notes:
 ;; far too early [and pretentious] to call the 'the long lost logging api' ^^
@@ -57,41 +58,45 @@
 
 ;;; ¤idea: keyword to signal intensity-> l-log-/name/ :info "blable"
 (defun l-create-log (name &optional filename)
-  "Create and return a log with given NAME
+  "Create and return a log with given NAME.
+
 The log is both registered and returned to be eventually asigned to a variable.
-Warning will be issued if a logger with same NAME already exists"
-  ;;§other param: filename, saving frequenci, etc.
+An optional FILENAME to which log will be outputed can be provided too.
+Warning will be issued if a logger with same NAME already exists."
+  ;; §otherParam: filename, saving frequenci, etc.
   ;; §keywordp
   ;; §maybe: create holding var and functions? [maybe at a higher level?]
   (interactive "sName of the log: ")
-  ;;§todosanitze name?
-  ;; §todo:then check no name conflict
+  ;;§todo: sanitzename?
+  ;; §todo: then check no name conflict
   (if (equal nil (l-get-log name)) ;¤hack
       (let ((log (l--make-log name `(filename ,filename))))
-	(ht-set! l-log-index name log)
-	log)
+        (ht-set! l-log-index name log)
+        log)
     (message "A log named %s already exists: %s" name (l-get-log name))))
 
 (defun l-get-log (name)
-  "Send back the eventual buffer with specified NAME"
+  "Send back the eventual buffer with specified NAME."
   (ht-get l-log-index name))
 
 (defun l-create-logger (log)
-  "Create a function to directly append to LOGGER the given message.
+  "Create a function to directly append to LOG the given message.
 This function would be named log- followed by logger name"
   ;; §for now unique
   (message "type: %s" (type-of log))
   (if (l-log-p log)
        ;;§todo: check not set!
       (let ((name (concat "log-" (l-log-name log))))
-	(if (fboundp (intern name))
-	    (warn "%s logging function has already been made!" name)
-	  (l--make-logger log name)))
+        (if (fboundp (intern name))
+            (warn "%s logging function has already been made!" name)
+          (l--make-logger log name)))
     (warn "%s is not a log!" log)))
 
 (defmacro l--make-logger (-log fname)
   "Macro to create the logging function attached to a -LOG.
+
 This is not inteded for users."
+  ;; §maybe: swap name
   ;; ¤note: beware macro name conflict: var name must be different from the one used in log.
   `(defun ,(intern (eval fname))
      (message) ;§todo:doc
@@ -104,17 +109,18 @@ This is not inteded for users."
 
 
 (defun log (log-or-name message)
-  "Log given MESSAGE to specified LOG-OR-NAME.
+  "Log to specified LOG-OR-NAME given MESSAGE .
 LOG-OR-NAME is either a log or the name of the existing log"
+  ; §maybe: optional log-or-name. would use default if not set
   (if (l-log-p log-or-name)
       (l-message-to-log log-or-name message)
     (let ((log (l-get-log log-or-name)))
       (if log
-	  (l-message-to-log log message)
-	(warn "There is no log of name %s." log-or-name)))))
+          (l-message-to-log log message)
+        (warn "There is no log of name %s." log-or-name)))))
 
 (defun l-message-to-log (log message)
-  "Display MESSAGE to the Echo area and append it the given LOG"
+  "Display MESSAGE to the Echo area and append it the given LOG."
   ;; §later: evaluate message content now. and enable multi format (format style)
   (l--append-to-log (l-check-log log) message)
   (l-message-no-log message) ; ¤note: maybe subst?
@@ -137,12 +143,13 @@ LOG-OR-NAME is either a log or the name of the existing log"
 ;; §todo: mayeb wmessage + qmessage (or t transient)
 
 ;; ¤test:
-(setq test-log (l-create-log "ansible"))
-(l-message-to-log test-log (propertize "42" 'face 'font-lock-warning-face))
-(l-create-logger test-log)
-(log-ansible (propertize "Working!" 'face 'font-lock-type-face))
+(let ((test-log (l-create-log "ansible")))
+  (l-message-to-log test-log (propertize "42" 'face 'font-lock-warning-face))
+  (l-create-logger test-log)
+  (log-ansible (propertize "Working!" 'face 'font-lock-type-face)))
 
-;; §idea: add padding, centering functionnality. ¤maybe regroup in some class with all the other formating fonctionnality: color. etc
+;; §idea: add padding, centering functionnality.
+;; ¤maybe regroup in some class with all the other formating fonctionnality: color. etc
 ;; l-apply-font
 ;; ¤see: specific font
 
