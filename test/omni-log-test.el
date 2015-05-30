@@ -9,7 +9,7 @@
   (let ((test-log (l-create-log "ansible2")))
     (l-message-to-log test-log "42")
     (with-current-buffer (l-log-buffer test-log)
-      (should (equal (buffer-string) "42")))))
+      (should (equal (buffer-string) "42\n")))))
 
 ;; (ert-deftest can-create-logger-method()
 ;;   (let ((test-log (l-create-log "ansible")))

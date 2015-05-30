@@ -64,17 +64,17 @@
 ;;; ¤> accessor functions
 (defun l-log-name (log)
   "Get name of LOG."
-  (cadr (l-check-log log)))
+  (nth 1 (l-check-log log)))
 ;; ¤todo: cadr said to be coming from the `cl' package. (flycheck warning)
 ;; maybe use `nth' instead?
 
 (defun l-log-buffer (log)
   "Get buffer of LOG."
-  (caddr (l-check-log log)))
+  (nth 2 (l-check-log log)))
 
 (defun l-log-properties (log)
   "Get properties of LOG."
-  (cadddr (l-check-log log)))
+  (nth 3 (l-check-log log)))
 
 ;; §maybe: renaming function
 ;; ¤tmp: test (l-log-properties a)
