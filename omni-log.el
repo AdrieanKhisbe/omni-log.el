@@ -29,20 +29,20 @@
 ;; Offer function to log messages to dedicated buffers
 
 ;;; Building Notes:
+
 ;; far too early [and pretentious] to call the 'the long lost logging api' ^^
 
-
 ;; §IMP: DETERMINE EXTERIOR API YOU WANNA, and INDIVIDUAL COMPONENTS!!
-;; §todo: see terminology
-;; find name to differentiate make/create [¤so rename this and create function]
-;; §TODO: make or create: create idea, conceptual. make: realise
 
 ;;; Code:
 
 (require 'dash)
 (require 's)
-(require 'ht) ;§maybe start with alist not to have dependancy
+(require 'ht)
 (require 'omni-log-buffer)
+
+(defvar l-log-index (ht) ; §maybe create Message equivalent? ¤maybe: alist
+  "Logger hash containing associating between name and logger.")
 
 (defun l-message-no-log (message) ; ¤maybe: rest version (would have to splat it)
   "Print a MESSAGE in the loggin area without recording it in the *Messages* buffer."
@@ -57,22 +57,25 @@
 ;; §then color. (highligh/bold: ou plus `emphasize')
 ;; insert color in message: log-message-with-color
 
-(defvar l-log-index (ht) ; §maybe create Message equivalent? ¤maybe: alist
-  "Logger hash containing associating between name and logger.")
-
 (defun l-log (log-or-name)
   "Return log from LOG-OR-NAME or nil if non existing."
   (if (l-log-p log-or-name)
       log-or-name
-    (ht-get l-log-index log-or-name nil)))
+    (l-get-log log-or-name)))
 
-;;; ¤idea: keyword to signal intensity-> l-log-/name/ :info "blable"
+(defun l-get-log (name)
+  "Send back the eventual buffer with specified NAME."
+  (ht-get l-log-index name nil))
+
+
 (defun l-create-log (name &optional filename)
   "Create and return a log with given NAME.
 
 The log is both registered and returned to be eventually asigned to a variable.
 An optional FILENAME to which log will be outputed can be provided too.
 Warning will be issued if a logger with same NAME already exists."
+  ;; ¤idea: keyword to signal intensity-> l-log-/name/ :info "blable"
+
   ;; §maybe: anonym logger?
   ;; §otherParam: filename, saving frequenci, etc.
   ;; §keywordp
@@ -80,11 +83,11 @@ Warning will be issued if a logger with same NAME already exists."
   (interactive "sName of the log: ")
   ;; §todo: sanitze name?
   ;; §todo: then check no name conflict
-  (if (equal nil (l-get-log name)) ; ¤hack
+  (if (not (l-get-log name))
+      (message "A log named %s already exists: %s" name (l-get-log name))
       (let ((log (l--make-log name `(filename ,filename))))
         (ht-set! l-log-index name log)
-        log)
-    (message "A log named %s already exists: %s" name (l-get-log name))))
+        log)))
 
 (defun l-kill-log (log-or-name &optional archive)
   "Kill LOG-OR-NAME.  If ARCHIVE ask, the buffer will be renamed (and returned)."
@@ -97,9 +100,6 @@ Warning will be issued if a logger with same NAME already exists."
           (rename-buffer (format "%s-old" (l-log-name log)) t))
         (kill-buffer (l-log-buffer log)))))
 
-(defun l-get-log (name)
-  "Send back the eventual buffer with specified NAME."
-  (ht-get l-log-index name))
 
 (defun l-create-logger (log)
   "Create a function to directly append to LOG the given message.
