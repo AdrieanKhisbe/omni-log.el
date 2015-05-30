@@ -3,8 +3,6 @@
 
 (package-file "omni-log.el")
 
-(depends-on "ht")
-
 (development
  (depends-on "f")
  (depends-on "ecukes")

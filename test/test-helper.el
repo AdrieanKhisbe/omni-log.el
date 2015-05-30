@@ -35,8 +35,6 @@
      (l-kill-log test-log)))
 
 (require 'ert)
-(require 's)
-(require 'dash)
 (require 'omni-log-buffer (f-expand "omni-log-buffer" omni-log-root-path))
 (require 'omni-log (f-expand "omni-log" omni-log-root-path))
 
