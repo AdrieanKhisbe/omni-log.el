@@ -1,11 +1,11 @@
 ;;; omni-log-buffer.el --- Logging utilities
 
-;; Copyright (C) 2014  Adrien Becchis
+;; Copyright (C) 2014-2015  Adrien Becchis
 ;; Created:  2014-07-27
-;; Version: 0.1
-
 ;; Author: Adrien Becchis <adriean.khisbe@live.fr>
 ;; Keywords: convenience, languages, tools
+
+;; This file is NOT part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -22,43 +22,38 @@
 
 ;;; Commentary:
 
-;;
+;; Intern structure of a logger.
 
 ;;; Building Notes:
 ;; for now: marker, name, buffer properties
-
-;;; Code:
-
 ;; ¤maybe: give a try to EIEIO: http://www.gnu.org/software/emacs/manual/html_mono/eieio.html
 ;; ¤see: http://nic.ferrier.me.uk/blog/2012_07/tips-and-tricks-for-emacslisp
 
-;; ¤maybe also rename intern to ogger.
+;;; Code:
+
+;; ¤maybe also rename intern to logger.
 ;;; ¤> Constructor
 (defun l--make-log (name &optional properties)
   "Build a loging buffer object with NAME and eventual PROPERTIES."
   ;; ¤maybe: precise this is intern function?
   ;; ¤maybe: build properties from keyword at this level?
   (let* ((buffer (get-buffer-create  (concat "*" name "*")))
-	(log (list 'log name buffer properties)))
+        (log (list 'log name buffer properties)))
     (with-current-buffer buffer
-      (read-only-mode) ; §later: log major mode
-      )
-    log ; renvoit le log
-    ))
-
-
+      (read-only-mode)) ; §later: log major mode
+    log))
 
 ;;; ¤> reconnaisseur & type checkying method
 
 (defun l-log-p (buffer) ; ¤note: maybe rename logp?
-  "Return t if buffer is an omni-log buffer."
+  "Return t if BUFFER is an omni-log buffer."
   ;; could be forged...[§maybe deeper check?]
   ;; §bonux: check buffer still alive? if notn maybe replace it?
   (and (consp buffer)
        (equal 'log (car buffer))))
 
 (defun l-check-log (log)
-  "Ensure That LOG is really one.  Throw exception otherwise.  Return the log"
+  "Ensure That LOG is really one.  Throw exception otherwise.  Return the log."
   (if (l-log-p log)
       log
     (signal 'wrong-type-argument '(l-log-p log)))) ; ¤check message: maybe send `type-of'
@@ -68,24 +63,24 @@
 
 ;;; ¤> accessor functions
 (defun l-log-name (log)
-  "Get name of LOG"
+  "Get name of LOG."
   (cadr (l-check-log log)))
-;; ¤todo: cadr said to be comming from the `cl' package. (flycheck warning); myabe use ` nth' instead?
+;; ¤todo: cadr said to be coming from the `cl' package. (flycheck warning)
+;; maybe use `nth' instead?
 
 (defun l-log-buffer (log)
-  "Get buffer of LOG"
+  "Get buffer of LOG."
   (caddr (l-check-log log)))
 
 (defun l-log-properties (log)
-  "Get properties of LOG"
+  "Get properties of LOG."
   (cadddr (l-check-log log)))
 
 ;; §maybe: renaming function
-;; ¤tmp:test (l-log-properties a)
+;; ¤tmp: test (l-log-properties a)
 
 ;; §todo: wrapper avec une qui encaspule le nom
-;; §todo:d get-log-or-create
-
+;; §todo: get-log-or-create
 
 ;; ¤> saving fonctionnality
 ;; §later: (defcustom l-default-saving-interval 5

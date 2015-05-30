@@ -1,12 +1,13 @@
 ;;; omni-log.el --- Logging utilities
 
-;; Copyright (C) 2014  Adrien Becchis
+;; Copyright (C) 2014-2015  Adrien Becchis
 ;; Created:  2014-07-27
-;; Version: 0.1
-;; §todo: URL
-
+;; Version: 0.0.1
+;; URL: https://github.com/AdrieanKhisbe/omni-log.el
 ;; Author: Adrien Becchis <adriean.khisbe@live.fr>
 ;; Keywords: convenience, languages, tools
+
+;; This file is NOT part of GNU Emacs.
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -23,7 +24,8 @@
 
 ;;; Commentary:
 
-;; §todo
+;; Logging Utilities for packages.
+;; Offer function to log messages to dedicated buffers
 
 ;;; Building Notes:
 ;; far too early [and pretentious] to call the 'the long lost logging api' ^^
@@ -67,9 +69,9 @@ Warning will be issued if a logger with same NAME already exists."
   ;; §keywordp
   ;; §maybe: create holding var and functions? [maybe at a higher level?]
   (interactive "sName of the log: ")
-  ;;§todo: sanitzename?
+  ;; §todo: sanitze name?
   ;; §todo: then check no name conflict
-  (if (equal nil (l-get-log name)) ;¤hack
+  (if (equal nil (l-get-log name)) ; ¤hack
       (let ((log (l--make-log name `(filename ,filename))))
         (ht-set! l-log-index name log)
         log)
