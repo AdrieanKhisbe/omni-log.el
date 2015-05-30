@@ -141,14 +141,7 @@ LOG-OR-NAME is either a log or the name of the existing log"
       ;; ¤note: message is supposed to be already formated. (-> color empahsize inside should be already done)
     (insert "\n"))))
 
-
-;; §todo: mayeb wmessage + qmessage (or t transient)
-
-;; ¤test:
-(let ((test-log (l-create-log "ansible")))
-  (l-message-to-log test-log (propertize "42" 'face 'font-lock-warning-face))
-  (l-create-logger test-log)
-  (log-ansible (propertize "Working!" 'face 'font-lock-type-face)))
+;; §todo: maybe wmessage + qmessage (or t transient)
 
 ;; §idea: add padding, centering functionnality.
 ;; ¤maybe regroup in some class with all the other formating fonctionnality: color. etc
