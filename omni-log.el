@@ -52,11 +52,16 @@
     (message message)))
 
 ;; §then color. (highligh/bold: ou plus `emphasize')
-
 ;; insert color in message: log-message-with-color
 
 (defvar l-log-index (ht) ; §maybe create Message equivalent? ¤maybe: alist
   "Logger hash containing associating between name and logger.")
+
+(defun l-log (log-or-name)
+  "Return log from LOG-OR-NAME or nil if non existing."
+  (if (l-log-p log-or-name)
+      log-or-name
+    (ht-get l-log-index log-or-name nil)))
 
 ;;; ¤idea: keyword to signal intensity-> l-log-/name/ :info "blable"
 (defun l-create-log (name &optional filename)
@@ -65,6 +70,7 @@
 The log is both registered and returned to be eventually asigned to a variable.
 An optional FILENAME to which log will be outputed can be provided too.
 Warning will be issued if a logger with same NAME already exists."
+  ;; §maybe: anonym logger?
   ;; §otherParam: filename, saving frequenci, etc.
   ;; §keywordp
   ;; §maybe: create holding var and functions? [maybe at a higher level?]
@@ -77,13 +83,24 @@ Warning will be issued if a logger with same NAME already exists."
         log)
     (message "A log named %s already exists: %s" name (l-get-log name))))
 
+(defun l-kill-log (log-or-name &optional archive)
+  "Kill LOG-OR-NAME.  If ARCHIVE ask, the buffer will be renamed (and returned)."
+  ;; §todo: kill attached logger
+  (let ((log (l-log log-or-name)))
+    (unless log (signal 'wrong-type-argument '(l-log-p log)))
+    (ht-remove! l-log-index (l-log-name log))
+    (if archive
+        (with-current-buffer (l-log-buffer log)
+          (rename-buffer (format "%s-old" (l-log-name log)) t))
+        (kill-buffer (l-log-buffer log)))))
+
 (defun l-get-log (name)
   "Send back the eventual buffer with specified NAME."
   (ht-get l-log-index name))
 
 (defun l-create-logger (log)
   "Create a function to directly append to LOG the given message.
-This function would be named log- followed by logger name"
+This function would be named `log-' followed by logger name"
   ;; §for now unique
   (message "type: %s" (type-of log))
   (if (l-log-p log)
@@ -92,23 +109,23 @@ This function would be named log- followed by logger name"
         (if (fboundp (intern name))
             (warn "%s logging function has already been made!" name)
           (l--make-logger log name)))
+    ;; §todo: save it in the log object
     (warn "%s is not a log!" log)))
 
-(defmacro l--make-logger (-log fname)
-  "Macro to create the logging function attached to a -LOG.
+(defmacro l--make-logger (-log function-name)
+  "Macro to create the logging function attached to a -LOG with FUNCTION-NAME.
 
 This is not inteded for users."
-  ;; §maybe: swap name
+  ;; §maybe: swap arguments name
   ;; ¤note: beware macro name conflict: var name must be different from the one used in log.
-  `(defun ,(intern (eval fname))
-     (message) ;§todo:doc
+  `(defun ,(intern (eval function-name)) (message)
+     ;;(format "%"); §todo: DOC
      (interactive)
      (l--append-to-log ',(symbol-value -log) message)
      (l-message-no-log message))) ; ¤note: maybe subst?
 ;;; ¤note: inlined, without check
 
-;; §maybe? l-log to current. -> set current or latest register?
-
+;; §maybe: l-log to current. -> set current or latest register?
 
 (defun log (log-or-name message)
   "Log to specified LOG-OR-NAME given MESSAGE .
@@ -139,7 +156,7 @@ LOG-OR-NAME is either a log or the name of the existing log"
       (insert message)
       ;; §todo: call to special formater on message: add timestamp (maybe calling function? (if can be retrieved from namespace))
       ;; ¤note: message is supposed to be already formated. (-> color empahsize inside should be already done)
-    (insert "\n"))))
+    (newline))))
 
 ;; §todo: maybe wmessage + qmessage (or t transient)
 
