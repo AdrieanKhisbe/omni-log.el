@@ -12,11 +12,10 @@
 ;; §todo: log with properties
 
 (ert-deftest can-log-to-created-log()
-  (let ((test-log (l-create-log "ansible")))
+  (with-log "ansible"
     (l-message-to-log test-log "42")
     (with-current-buffer (l-log-buffer test-log)
-      (should (equal (buffer-string) "42\n"))
-      (l-kill-log test-log))))
+      (should (equal (buffer-string) "42\n")))))
 
 ;; (ert-deftest can-create-logger-method()
 ;;   (let ((test-log (l-create-log "ansible")))

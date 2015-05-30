@@ -28,7 +28,11 @@
      ,@body
      (f-delete default-directory :force)))
 
-;; §todo: with logger
+(defmacro with-log (name &rest body)
+  "Evaluate BODY with a log named NAME at disposition."
+  `(let ((test-log (l-create-log ,(eval name))))
+     ,@body
+     (l-kill-log test-log)))
 
 (require 'ert)
 (require 's)
