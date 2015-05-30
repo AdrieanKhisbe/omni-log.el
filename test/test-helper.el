@@ -28,14 +28,14 @@
      ,@body
      (f-delete default-directory :force)))
 
-(defmacro with-log (name &rest body)
+(defmacro with-logger (name &rest body)
   "Evaluate BODY with a log named NAME at disposition."
-  `(let ((test-log (l-create-log ,(eval name))))
+  `(let ((test-logger (l-create-logger ,(eval name))))
      ,@body
-     (l-kill-log test-log)))
+     (l-kill-logger test-logger)))
 
 (require 'ert)
-(require 'omni-log-buffer (f-expand "omni-log-buffer" omni-log-root-path))
+(require 'omni-log-logger (f-expand "omni-log-logger" omni-log-root-path))
 (require 'omni-log (f-expand "omni-log" omni-log-root-path))
 
 (provide 'test-helper)

@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2014-2015  Adrien Becchis
 ;; Created:  2014-07-27
-;; Version: 0.0.1
+;; Version: 0.1.0
 ;; Package-Requires: ((emacs "24") (ht "2.0") (s "1.6.1") (dash "1.8.0") )
 ;; URL: https://github.com/AdrieanKhisbe/omni-log.el
 ;; Author: Adrien Becchis <adriean.khisbe@live.fr>
@@ -39,12 +39,12 @@
 (require 'dash)
 (require 's)
 (require 'ht)
-(require 'omni-log-buffer)
+(require 'omni-log-logger)
 
-(defvar l-log-index (ht) ; §maybe create Message equivalent? ¤maybe: alist
+(defvar l-logger-index (ht) ; §maybe create Message equivalent? ¤maybe: alist
   "Logger hash containing associating between name and logger.")
 
-(defun l-message-no-log (message) ; ¤maybe: rest version (would have to splat it)
+(defun l-quiet-message (message) ; ¤maybe: rest version (would have to splat it)
   "Print a MESSAGE in the loggin area without recording it in the *Messages* buffer."
   ;; inspired from eldoc
   (let ((message-log-max nil))
@@ -57,103 +57,104 @@
 ;; §then color. (highligh/bold: ou plus `emphasize')
 ;; insert color in message: log-message-with-color
 
-(defun l-log (log-or-name)
-  "Return log from LOG-OR-NAME or nil if non existing."
-  (if (l-log-p log-or-name)
-      log-or-name
-    (l-get-log log-or-name)))
+(defun l-logger (logger-or-name)
+  "Return logger from LOGGER-OR-NAME or nil if non existing."
+  (if (l-logger-p logger-or-name)
+      logger-or-name
+    (l-get-logger logger-or-name)))
 
-(defun l-get-log (name)
+(defun l-get-logger (name)
   "Send back the eventual buffer with specified NAME."
-  (ht-get l-log-index name nil))
+  (ht-get l-logger-index name nil))
 
 
-(defun l-create-log (name &optional filename)
-  "Create and return a log with given NAME.
+(defun l-create-logger (name &optional filename)
+  "Create and return a logger with given NAME.
 
-The log is both registered and returned to be eventually asigned to a variable.
-An optional FILENAME to which log will be outputed can be provided too.
+The logger is both registered and returned to be eventually
+asigned to a variable.  An optional FILENAME to which log will
+be outputed can be provided too.
+
 Warning will be issued if a logger with same NAME already exists."
-  ;; ¤idea: keyword to signal intensity-> l-log-/name/ :info "blable"
+  ;; ¤idea: keyword to signal intensity-> l-logger-/name/ :info "blable"
 
   ;; §maybe: anonym logger?
   ;; §otherParam: filename, saving frequenci, etc.
-  ;; §keywordp
+  ;; §keywordp?
   ;; §maybe: create holding var and functions? [maybe at a higher level?]
-  (interactive "sName of the log: ")
-  ;; §todo: sanitze name?
+  (interactive "sName of the logger: ")
+  ;; §todo: sanitize name?
   ;; §todo: then check no name conflict
-  (if (not (l-get-log name))
-      (message "A log named %s already exists: %s" name (l-get-log name))
-      (let ((log (l--make-log name `(filename ,filename))))
-        (ht-set! l-log-index name log)
-        log)))
+  (if (l-get-logger name)
+      (message "A logger named %s already exists" name)
+      (let ((logger (l--make-logger name `(filename ,filename))))
+        (ht-set! l-logger-index name logger)
+        logger)))
 
-(defun l-kill-log (log-or-name &optional archive)
-  "Kill LOG-OR-NAME.  If ARCHIVE ask, the buffer will be renamed (and returned)."
-  ;; §todo: kill attached logger
-  (let ((log (l-log log-or-name)))
-    (unless log (signal 'wrong-type-argument '(l-log-p log)))
-    (ht-remove! l-log-index (l-log-name log))
-    (if archive
-        (with-current-buffer (l-log-buffer log)
-          (rename-buffer (format "%s-old" (l-log-name log)) t))
-        (kill-buffer (l-log-buffer log)))))
+(defun l-kill-logger (logger-or-name &optional archive)
+  "Kill LOGGER-OR-NAME.  If ARCHIVE ask, the buffer will be renamed (and returned)."
+  ;; §todo: kill attached logging methods
+  (let ((logger (l-logger logger-or-name)))
+    (unless logger (signal 'wrong-type-argument '(l-logger-p logger)))
+    (let ((name (l-logger-name logger)))
+      (ht-remove! l-logger-index name)
+      ;; remove logging function (whether it has bee create of not)
+      (fmakunbound (intern (concat "log-" name)))
+      (if archive
+          (with-current-buffer (l-logger-buffer logger)
+            (rename-buffer (format "%s-old" name) t))
+        (kill-buffer (l-logger-buffer logger))))))
 
 
-(defun l-create-logger (log)
-  "Create a function to directly append to LOG the given message.
+(defun l-create-log-function (logger)
+  ;; §todo: add possibility to bypass logger name?
+  "Create a function to directly append to LOGGER the given message.
 This function would be named `log-' followed by logger name"
-  ;; §for now unique
-  (message "type: %s" (type-of log))
-  (if (l-log-p log)
-       ;;§todo: check not set!
-      (let ((name (concat "log-" (l-log-name log))))
-        (if (fboundp (intern name))
-            (warn "%s logging function has already been made!" name)
-          (l--make-logger log name)))
+  ;;§todo: check not set!
+  (let ((name (concat "log-" (l-logger-name logger))))
+    (if (fboundp (intern name))
+        (warn "%s logging function has already been made!" name)
+      (l--make-log-function name logger)))
     ;; §todo: save it in the log object
-    (warn "%s is not a log!" log)))
+  )
 
-(defmacro l--make-logger (-log function-name)
-  "Macro to create the logging function attached to a -LOG with FUNCTION-NAME.
+(defmacro l--make-log-function (function-name logger-)
+  "Macro to create the logging FUNCTION-NAME attached to the given LOGGER-.
 
-This is not inteded for users."
-  ;; §maybe: swap arguments name
+This is not intended for users."
   ;; ¤note: beware macro name conflict: var name must be different from the one used in log.
   `(defun ,(intern (eval function-name)) (message)
-     ;;(format "%"); §todo: DOC
+     ,(format "Log given MESSAGE to the %s logger" (l-logger-name (eval logger-)))
      (interactive)
-     (l--append-to-log ',(symbol-value -log) message)
-     (l-message-no-log message))) ; ¤note: maybe subst?
+     (l--append-to-logger ',(symbol-value logger-) message)
+     (l-quiet-message message))) ; ¤note: maybe subst?
 ;;; ¤note: inlined, without check
 
 ;; §maybe: l-log to current. -> set current or latest register?
 
-(defun log (log-or-name message)
-  "Log to specified LOG-OR-NAME given MESSAGE .
-LOG-OR-NAME is either a log or the name of the existing log"
-  ; §maybe: optional log-or-name. would use default if not set
-  (if (l-log-p log-or-name)
-      (l-message-to-log log-or-name message)
-    (let ((log (l-get-log log-or-name)))
-      (if log
-          (l-message-to-log log message)
-        (warn "There is no log of name %s." log-or-name)))))
+(defun log (logger-or-name message)
+  "Log to specified LOGGER-OR-NAME given MESSAGE.
+LOGGER-OR-NAME is either a logger or the name of the existing logger"
+  ;; §maybe: optional log-or-name. would use default if not set
+  ;; §FIXME Refactor after renaming
+    (let ((logger (l-logger logger-or-name)))
+      (if logger
+          (l-message-to-logger logger message)
+        (warn "There is no logger of name %s." logger-or-name))))
 
-(defun l-message-to-log (log message)
-  "Display MESSAGE to the Echo area and append it the given LOG."
+(defun l-message-to-logger (logger message)
+  "Add to LOGGER  MESSAGE and display it in the Echo area."
   ;; §later: evaluate message content now. and enable multi format (format style)
-  (l--append-to-log (l-check-log log) message)
-  (l-message-no-log message) ; ¤note: maybe subst?
+  (l--append-to-logger (l-check-logger logger) message)
+  (l-quiet-message message) ; ¤note: maybe subst?
   ;;  message ; ¤see if giving message as return value? [latter when evaluation occur inside? &rest]
   )
 
-(defun l--append-to-log (log message)
-  "Add MESSAGE to specified LOG."
+(defun l--append-to-logger (logger message)
+  "Append to LOGGER given MESSAGE."
   ;; ¤note: type checking supposed to be done at a higher level
-  (with-current-buffer (l-log-buffer log)
-    ;; §maybe: create a with-current-log
+  (with-current-buffer (l-logger-buffer logger)
+    ;; §maybe: create a with-current-logger
     (goto-char (point-max)) ;; ¤note: maybe use some mark if the bottom of the buffer us some text or so
     (let ((inhibit-read-only t))
       (insert message)

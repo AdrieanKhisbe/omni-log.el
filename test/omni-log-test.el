@@ -1,30 +1,25 @@
-(ert-deftest l-log/from-log()
-  (let ((log '(log "dummy-log")))
-    (should (eq log (l-log log)))))
+(ert-deftest l-logger/from-logger()
+  (let ((logger '(logger "dummy-logger")))
+    (should (eq logger (l-logger logger)))))
 ;;
 
-(ert-deftest can-create-log()
-  (let ((test-log (l-create-log "ansible")))
-    (should (l-log-p test-log))
-    (should (equal "ansible" (l-log-name test-log)))
-    (l-kill-log test-log)))
+(ert-deftest can-create-logger()
+  (let ((test-logger (l-create-logger "ansible")))
+    (should (l-logger-p test-logger))
+    (should (equal "ansible" (l-logger-name test-logger)))
+    (l-kill-logger test-logger)))
 
 ;; §todo: log with properties
 
-(ert-deftest can-log-to-created-log()
-  (with-log "ansible"
-    (l-message-to-log test-log "42")
-    (with-current-buffer (l-log-buffer test-log)
+(ert-deftest can-log-to-created-logger()
+  (with-logger "ansible"
+    (l-message-to-logger test-logger "42")
+    (with-current-buffer (l-logger-buffer test-logger)
       (should (equal (buffer-string) "42\n")))))
 
-;; (ert-deftest can-create-logger-method()
-;;   (let ((test-log (l-create-log "ansible")))
-;;     (l-message-to-log test-log (propertize "42" 'face 'font-lock-warning-face))
-;;     (l-create-logger test-log)
-;;     (log-ansible (propertize "Working!" 'face 'font-lock-type-face))))
-
-;; (ert-deftest can-create-log()
-;;   (let ((test-log (l-create-log "ansible")))
-;;     (l-message-to-log test-log (propertize "42" 'face 'font-lock-warning-face))
-;;     (l-create-logger test-log)
-;;     (log-ansible (propertize "Working!" 'face 'font-lock-type-face))))
+(ert-deftest can-create-logger-method()
+  (with-logger "ansible"
+    (l-create-log-function test-logger)
+    (log-ansible "Working!")
+    (with-current-buffer (l-logger-buffer test-logger)
+      (should (equal (buffer-string) "Working!\n")))))

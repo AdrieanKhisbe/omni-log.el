@@ -1,4 +1,4 @@
-;;; omni-log-buffer.el --- Logging utilities
+;;; omni-log-logger.el --- Logging utilities
 
 ;; Copyright (C) 2014-2015  Adrien Becchis
 ;; Created:  2014-07-27
@@ -31,61 +31,59 @@
 
 ;;; Code:
 
-;; ¤maybe also rename intern to logger.
 ;;; ¤> Constructor
-(defun l--make-log (name &optional properties)
+(defun l--make-logger (name &optional properties)
   "Build a loging buffer object with NAME and eventual PROPERTIES."
   ;; ¤maybe: precise this is intern function?
   ;; ¤maybe: build properties from keyword at this level?
   (let* ((buffer (get-buffer-create  (concat "*" name "*")))
-        (log (list 'log name buffer properties)))
+        (logger (list 'logger name buffer properties)))
     (with-current-buffer buffer
       (read-only-mode)) ; §later: log major mode
-    log))
+    logger))
 
 ;;; ¤> reconnaisseur & type checkying method
-
-(defun l-log-p (buffer) ; ¤note: maybe rename logp?
-  "Return t if BUFFER is an omni-log buffer."
+(defun l-logger-p (object) ; ¤note: maybe rename logp?
+  "Return t if OBJECT is an omni-log buffer."
   ;; could be forged...[§maybe deeper check?]
   ;; §bonux: check buffer still alive? if notn maybe replace it?
-  (and (consp buffer)
-       (equal 'log (car buffer))))
+  (and (consp object)
+       (equal 'logger (car object))))
 
-(defun l-check-log (log)
-  "Ensure That LOG is really one.  Throw exception otherwise.  Return the log."
-  (if (l-log-p log)
-      log
-    (signal 'wrong-type-argument '(l-log-p log)))) ; ¤check message: maybe send `type-of'
+(defun l-check-logger (logger)
+  "Ensure That LOGGER is really one.  Throw exception otherwise.  Return the logger."
+  (if (l-logger-p logger)
+      logger
+    (signal 'wrong-type-argument '(l-logger-p logger)))) ; ¤check message: maybe send `type-of'
 ;; "Provided buffer is not a log")
 
 ;; ¤note:maybe two way to call to log. registered name, or particular logbuffer. (this checkying function is for that,)
 
 ;;; ¤> accessor functions
-(defun l-log-name (log)
-  "Get name of LOG."
-  (nth 1 (l-check-log log)))
+(defun l-logger-name (logger)
+  "Get name of LOGGER."
+  (nth 1 (l-check-logger logger)))
 ;; ¤todo: cadr said to be coming from the `cl' package. (flycheck warning)
 ;; maybe use `nth' instead?
 
-(defun l-log-buffer (log)
-  "Get buffer of LOG."
-  (nth 2 (l-check-log log)))
+(defun l-logger-buffer (logger)
+  "Get buffer of LOGGER."
+  (nth 2 (l-check-logger logger)))
 
-(defun l-log-properties (log)
-  "Get properties of LOG."
-  (nth 3 (l-check-log log)))
+(defun l-logger-properties (logger)
+  "Get properties of LOGGER."
+  (nth 3 (l-check-logger logger)))
 
 ;; §maybe: renaming function
-;; ¤tmp: test (l-log-properties a)
+;; ¤tmp: test (l-logger-properties a)
 
 ;; §todo: wrapper avec une qui encaspule le nom
-;; §todo: get-log-or-create
+;; §todo: get-logger-or-create
 
 ;; ¤> saving fonctionnality
 ;; §later: (defcustom l-default-saving-interval 5
 ;; §see: how to handle this. (determine when to save)
 ;; §this shouuld go in the major mode to create! [create file.]
 
-(provide 'omni-log-buffer)
-;;; omni-log-buffer.el ends here
+(provide 'omni-log-logger)
+;;; omni-log-logger.el ends here
