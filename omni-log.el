@@ -4,7 +4,7 @@
 
 ;; Author: Adrien Becchis <adriean.khisbe@live.fr>
 ;; Created:  2014-07-27
-;; Version: 0.1.0
+;; Version: 0.1.1
 ;; Package-Requires: ((emacs "24") (ht "2.0") (s "1.6.1") (dash "1.8.0") )
 ;; Url: https://github.com/AdrieanKhisbe/omni-log.el
 ;; Keywords: convenience, languages, tools
@@ -112,11 +112,11 @@ Warning will be issued if a logger with same NAME already exists."
   "Create a function to directly append to LOGGER the given message.
 This function would be named `log-' followed by logger name"
   ;;§todo: check not set!
-  (let ((name (concat "log-" (omni-log-logger-name logger))))
-    (if (fboundp (intern name))
+  (let ((name (intern (concat "log-" (omni-log-logger-name logger)))))
+    (if (fboundp name)
         (warn "%s logging function has already been made!" name)
       (omni-log--make-log-function name logger)))
-    ;; §todo: save it in the log object
+    ;; §todo: save it in the log obxject
   )
 
 (defmacro omni-log--make-log-function (function-name logger-)
@@ -124,7 +124,7 @@ This function would be named `log-' followed by logger name"
 
 This is not intended for users."
   ;; ¤note: beware macro name conflict: var name must be different from the one used in log.
-  `(defun ,(intern (eval function-name)) (message)
+  `(defun ,(eval function-name) (message)
      ,(format "Log given MESSAGE to the %s logger" (omni-log-logger-name (eval logger-)))
      (interactive)
      (omni-log--append-to-logger ',(symbol-value logger-) message)

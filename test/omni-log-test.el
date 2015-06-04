@@ -23,3 +23,11 @@
     (log-ansible "Working!")
     (with-current-buffer (omni-log-logger-buffer test-logger)
       (should (equal (buffer-string) "Working!\n")))))
+
+(ert-deftest can-create-logger-method-with-variable-name()
+  (let ((name "yo"))
+    (with-logger name
+      (omni-log-create-log-function test-logger)
+      (log-yo "Working!")
+      (with-current-buffer (omni-log-logger-buffer test-logger)
+        (should (equal (buffer-string) "Working!\n"))))))
