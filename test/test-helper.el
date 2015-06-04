@@ -30,9 +30,9 @@
 
 (defmacro with-logger (name &rest body)
   "Evaluate BODY with a log named NAME at disposition."
-  `(let ((test-logger (l-create-logger ,(eval name))))
+  `(let ((test-logger (omni-log-create-logger ,(eval name))))
      ,@body
-     (l-kill-logger test-logger)))
+     (omni-log-kill-logger test-logger)))
 
 (require 'ert)
 (require 'omni-log-logger (f-expand "omni-log-logger" omni-log-root-path))

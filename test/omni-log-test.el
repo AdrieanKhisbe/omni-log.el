@@ -1,25 +1,25 @@
-(ert-deftest l-logger/from-logger()
+(ert-deftest omni-log-logger/from-logger()
   (let ((logger '(logger "dummy-logger")))
-    (should (eq logger (l-logger logger)))))
+    (should (eq logger (omni-log-logger logger)))))
 ;;
 
 (ert-deftest can-create-logger()
-  (let ((test-logger (l-create-logger "ansible")))
-    (should (l-logger-p test-logger))
-    (should (equal "ansible" (l-logger-name test-logger)))
-    (l-kill-logger test-logger)))
+  (let ((test-logger (omni-log-create-logger "ansible")))
+    (should (omni-log-logger-p test-logger))
+    (should (equal "ansible" (omni-log-logger-name test-logger)))
+    (omni-log-kill-logger test-logger)))
 
 ;; §todo: log with properties
 
 (ert-deftest can-log-to-created-logger()
   (with-logger "ansible"
-    (l-message-to-logger test-logger "42")
-    (with-current-buffer (l-logger-buffer test-logger)
+    (omni-log-message-to-logger test-logger "42")
+    (with-current-buffer (omni-log-logger-buffer test-logger)
       (should (equal (buffer-string) "42\n")))))
 
 (ert-deftest can-create-logger-method()
   (with-logger "ansible"
-    (l-create-log-function test-logger)
+    (omni-log-create-log-function test-logger)
     (log-ansible "Working!")
-    (with-current-buffer (l-logger-buffer test-logger)
+    (with-current-buffer (omni-log-logger-buffer test-logger)
       (should (equal (buffer-string) "Working!\n")))))

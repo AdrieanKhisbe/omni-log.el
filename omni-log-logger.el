@@ -32,7 +32,7 @@
 ;;; Code:
 
 ;;; ¤> Constructor
-(defun l--make-logger (name &optional properties)
+(defun omni-log--make-logger (name &optional properties)
   "Build a loging buffer object with NAME and eventual PROPERTIES."
   ;; ¤maybe: precise this is intern function?
   ;; ¤maybe: build properties from keyword at this level?
@@ -43,45 +43,45 @@
     logger))
 
 ;;; ¤> reconnaisseur & type checkying method
-(defun l-logger-p (object) ; ¤note: maybe rename logp?
+(defun omni-log-logger-p (object) ; ¤note: maybe rename logp?
   "Return t if OBJECT is an omni-log buffer."
   ;; could be forged...[§maybe deeper check?]
   ;; §bonux: check buffer still alive? if notn maybe replace it?
   (and (consp object)
        (equal 'logger (car object))))
 
-(defun l-check-logger (logger)
+(defun omni-log-check-logger (logger)
   "Ensure That LOGGER is really one.  Throw exception otherwise.  Return the logger."
-  (if (l-logger-p logger)
+  (if (omni-log-logger-p logger)
       logger
-    (signal 'wrong-type-argument '(l-logger-p logger)))) ; ¤check message: maybe send `type-of'
+    (signal 'wrong-type-argument '(omni-log-logger-p logger)))) ; ¤check message: maybe send `type-of'
 ;; "Provided buffer is not a log")
 
 ;; ¤note:maybe two way to call to log. registered name, or particular logbuffer. (this checkying function is for that,)
 
 ;;; ¤> accessor functions
-(defun l-logger-name (logger)
+(defun omni-log-logger-name (logger)
   "Get name of LOGGER."
-  (nth 1 (l-check-logger logger)))
+  (nth 1 (omni-log-check-logger logger)))
 ;; ¤todo: cadr said to be coming from the `cl' package. (flycheck warning)
 ;; maybe use `nth' instead?
 
-(defun l-logger-buffer (logger)
+(defun omni-log-logger-buffer (logger)
   "Get buffer of LOGGER."
-  (nth 2 (l-check-logger logger)))
+  (nth 2 (omni-log-check-logger logger)))
 
-(defun l-logger-properties (logger)
+(defun omni-log-logger-properties (logger)
   "Get properties of LOGGER."
-  (nth 3 (l-check-logger logger)))
+  (nth 3 (omni-log-check-logger logger)))
 
 ;; §maybe: renaming function
-;; ¤tmp: test (l-logger-properties a)
+;; ¤tmp: test (omni-log-logger-properties a)
 
 ;; §todo: wrapper avec une qui encaspule le nom
 ;; §todo: get-logger-or-create
 
 ;; ¤> saving fonctionnality
-;; §later: (defcustom l-default-saving-interval 5
+;; §later: (defcustom omni-log-default-saving-interval 5
 ;; §see: how to handle this. (determine when to save)
 ;; §this shouuld go in the major mode to create! [create file.]
 
