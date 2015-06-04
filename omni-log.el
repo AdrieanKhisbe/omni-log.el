@@ -1,10 +1,10 @@
-;;; omni-log.el --- Logging utilities
+;;; omni-log.el --- Logging utilities  -*- lexical-binding: t -*-
 
 ;; Copyright (C) 2014-2015  Adrien Becchis
 
 ;; Author: Adrien Becchis <adriean.khisbe@live.fr>
 ;; Created:  2014-07-27
-;; Version: 0.1.1
+;; Version: 0.1.2
 ;; Package-Requires: ((emacs "24") (ht "2.0") (s "1.6.1") (dash "1.8.0") )
 ;; Url: https://github.com/AdrieanKhisbe/omni-log.el
 ;; Keywords: convenience, languages, tools
@@ -119,16 +119,19 @@ This function would be named `log-' followed by logger name"
     ;; §todo: save it in the log obxject
   )
 
-(defmacro omni-log--make-log-function (function-name logger-)
-  "Macro to create the logging FUNCTION-NAME attached to the given LOGGER-.
+;; §check lexical biniding
+(defun omni-log--make-log-function (function-name logger)
+  "Create the logging FUNCTION-NAME attached to the given LOGGER.
 
 This is not intended for users."
   ;; ¤note: beware macro name conflict: var name must be different from the one used in log.
-  `(defun ,(eval function-name) (message)
-     ,(format "Log given MESSAGE to the %s logger" (omni-log-logger-name (eval logger-)))
-     (interactive)
-     (omni-log--append-to-logger ',(symbol-value logger-) message)
-     (omni-log-quiet-message message))) ; ¤note: maybe subst?
+  (defalias function-name
+    (function (lambda (message)
+                (format "Log given MESSAGE to the %s logger" (omni-log-logger-name logger))
+                (interactive)
+                (omni-log--append-to-logger logger message)
+                (omni-log-quiet-message message)))))
+;;¤note: maybe subst?
 ;;; ¤note: inlined, without check
 
 ;; §maybe: omni-log-log to current. -> set current or latest register?
