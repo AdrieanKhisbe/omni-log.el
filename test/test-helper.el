@@ -34,6 +34,11 @@
      ,@body
      (omni-log-kill-logger test-logger)))
 
+(require 'undercover)
+(undercover "*.el" "omni-log/*.el"
+            (:exclude "*-test.el")
+            (:send-report nil)
+            (:report-file "/tmp/undercover-report.json"))
 (require 'ert)
 (require 'omni-log-logger (f-expand "omni-log-logger" omni-log-root-path))
 (require 'omni-log (f-expand "omni-log" omni-log-root-path))
