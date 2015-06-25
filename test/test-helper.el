@@ -40,8 +40,8 @@
             (:send-report nil)
             (:report-file "/tmp/undercover-report.json"))
 (require 'ert)
-(require 'omni-log-logger (f-expand "omni-log-logger" omni-log-root-path))
-(require 'omni-log (f-expand "omni-log" omni-log-root-path))
+(require 'omni-log-logger)
+(require 'omni-log)
 
 (provide 'test-helper)
 ;;; test-helper.el ends here
