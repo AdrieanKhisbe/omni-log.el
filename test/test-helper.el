@@ -43,5 +43,4 @@
 (require 'omni-log-logger)
 (require 'omni-log)
 
-(provide 'test-helper)
 ;;; test-helper.el ends here
