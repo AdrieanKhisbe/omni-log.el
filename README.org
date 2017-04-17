@@ -1,4 +1,4 @@
-* Omni-Log
+#+TITLE: Omni-Log
 
 [[https://travis-ci.org/AdrieanKhisbe/omni-log.el][file:https://travis-ci.org/AdrieanKhisbe/omni-log.el.svg]]
 [[https://coveralls.io/r/AdrieanKhisbe/omni-log.el][file:https://coveralls.io/repos/AdrieanKhisbe/omni-log.el/badge.svg]]
@@ -12,12 +12,34 @@
 ** Description
 This /in early development/ library is to provide logging faculty.
 
+These enable to create logger and logger function that print message to the
+/echo Area/ and append them in a dedicated buffer.
+
 ** Usage
-+ Create a logger
-+ Use the logger
++ Create a logger:
+  #+BEGIN_SRC emacs-lisp
+    (require 'omni-log)
+
+    (let ((my-logger (omni-log-create-logger "ansible" '((prompt . ">x>")))))
+      (omni-log-create-log-function my-logger) ;; create a log-ansible function
+      my-logger)
+  #+END_SRC
++ Use the logger:
+  #+BEGIN_SRC emacs-lisp
+    (logger-ansible "my message")
+    ;; §later: rest options
+  #+END_SRC
+
+
+An omni-log can take an extra set of option in an alist to customize it's behavior.
+Here is the list
+- prompt :: a prefix string used in the logged messages
+- fading :: boolean option to have the message fade away
+- fading-delay :: delay in second after which the fading begin
+- fading-duration :: duration in second of the fading effect
 
 ** Installation
-Put it on the path and load it, or wait the melpa recipe to it the ground!
+Omni-log is available on melpa, just do a =(package-install 'omni-log)= to retrieve it
 
 ** Notes
 This is still a prototype. I use it on my =omni-quotes= package, but API is not frozen yet.

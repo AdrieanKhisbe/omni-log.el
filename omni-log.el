@@ -168,7 +168,7 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
 
 (defun omni-log-message-to-logger (logger message)
   "Add to LOGGER given MESSAGE and display it in the Echo area."
-  ;; §TODO: add prompt coloration
+  ;; §TODO: add prompt fading coloration
   ;; §later: evaluate message content now. and enable multi format (format style)
   (let* ((prompt-prop (omni-log-logger-property logger 'prompt))
          (prompt (if prompt-prop (concat prompt-prop " ") ""))
@@ -177,15 +177,13 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
          (fading-duration (omni-log-logger-property logger 'fading-duration))
          (prompt-face (if fading 'omni-log-fading-prompt-face 'omni-log-prompt-face))
          (message-face (if fading 'omni-log-fading-face 'omni-log-face))
-         )
-    (setq message (format "%s%s" (propertize prompt 'face prompt-face)
-                          (propertize message 'face message-face)))
+         (message (format "%s%s" (propertize prompt 'face prompt-face)
+                          (propertize message 'face message-face))))
     (omni-log--append-to-logger (omni-log-check-logger logger) message)
     (if fading
         (omni-log-quiet-fading-message message fading-delay fading-duration)
       (omni-log-quiet-message message))))
-    ;;¤note: maybe subst?
-    ;;  message ; ¤see if giving message as return value? [latter when evaluation occur inside? &rest]
+    ;; ¤see: if giving message as return value? [latter when evaluation occur inside? &rest]
 
 
 (defun omni-log-quiet-fading-message (message &optional delay duration)
