@@ -168,11 +168,13 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
 
 (defun omni-log-message-to-logger (logger message)
   "Add to LOGGER given MESSAGE and display it in the Echo area."
-  ;; §TODO: add prompt¤
+  ;; §TODO: add prompt coloration
   ;; §later: evaluate message content now. and enable multi format (format style)
-  (let* ((props  (omni-log-logger-properties logger))
-         (prompt (if nil (concat ">>" " ") ""))
-         (fading nil)
+  (let* ((prompt-prop (omni-log-logger-property logger 'prompt))
+         (prompt (if prompt-prop (concat prompt-prop " ") ""))
+         (fading (omni-log-logger-property logger 'fading))
+         (fading-delay (omni-log-logger-property logger 'fading-delay))
+         (fading-duration (omni-log-logger-property logger 'fading-duration))
          (prompt-face (if fading 'omni-log-fading-prompt-face 'omni-log-prompt-face))
          (message-face (if fading 'omni-log-fading-face 'omni-log-face))
          )
@@ -180,15 +182,18 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
                           (propertize message 'face message-face)))
     (omni-log--append-to-logger (omni-log-check-logger logger) message)
     (if fading
-        (omni-log-quiet-fading-message message)
+        (omni-log-quiet-fading-message message fading-delay fading-duration)
       (omni-log-quiet-message message))))
     ;;¤note: maybe subst?
     ;;  message ; ¤see if giving message as return value? [latter when evaluation occur inside? &rest]
 
 
-(defun omni-log-quiet-fading-message (message)
+(defun omni-log-quiet-fading-message (message &optional delay duration)
   "Log given MESSAGE in a fading way"
- (let ((timestamp (float-time))) ;; §later: extract a fading function
+  (let ((timestamp (float-time))
+        (delay (or delay 2))
+        (duration (or duration 5))
+        (nstep 30))
           (modify-face 'omni-log-fading-face ; reset color
                        (face-attribute 'omni-log-face :foreground nil t))
           (omni-log-quiet-message (propertize message 'log-p t 'timestamp timestamp))
@@ -196,9 +201,9 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
                           (face-attribute 'omni-log-fading-face :foreground nil t)
                           (let ((background (face-attribute 'omni-log-fading-face :background nil t)))
                             (if (equal background "unspecified-bg") "black" background))
-                          20)
+                          nstep)
             (lambda (index color)
-              (run-at-time index nil
+              (run-at-time (+ delay (* index (/ (float duration) nstep))) nil
                            (lambda (col timestamp)
                              (let ((cm (current-message)))
                                (if (and cm
