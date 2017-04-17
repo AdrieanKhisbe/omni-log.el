@@ -1,7 +1,7 @@
 ;;; omni-log-logger.el --- Logging utilities
 
-;; Copyright (C) 2014-2015  Adrien Becchis
-;; Created:  2014-07-27
+;; Copyright (C) 2014-2017  Adrien Becchis
+;; Created: 2014-07-27
 ;; Author: Adrien Becchis <adriean.khisbe@live.fr>
 ;; Keywords: convenience, languages, tools
 
@@ -20,14 +20,14 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary:
-
-;; Intern structure of a logger.
-
 ;;; Building Notes:
 ;; for now: marker, name, buffer properties
 ;; ¤maybe: give a try to EIEIO: http://www.gnu.org/software/emacs/manual/html_mono/eieio.html
 ;; ¤see: http://nic.ferrier.me.uk/blog/2012_07/tips-and-tricks-for-emacslisp
+
+;;; Commentary:
+
+;; Intern structure of a logger.
 
 ;;; Code:
 
