@@ -57,14 +57,12 @@
     (signal 'wrong-type-argument '(omni-log-logger-p logger)))) ; ¤check message: maybe send `type-of'
 ;; "Provided buffer is not a log")
 
-;; ¤note:maybe two way to call to log. registered name, or particular logbuffer. (this checkying function is for that,)
+;; ¤note: maybe two way to call to log. registered name, or particular logbuffer. (this checkying function is for that,)
 
 ;;; ¤> accessor functions
 (defun omni-log-logger-name (logger)
   "Get name of LOGGER."
   (nth 1 (omni-log-check-logger logger)))
-;; ¤todo: cadr said to be coming from the `cl' package. (flycheck warning)
-;; maybe use `nth' instead?
 
 (defun omni-log-logger-buffer (logger)
   "Get buffer of LOGGER."
@@ -83,7 +81,7 @@
 ;; ¤> saving fonctionnality
 ;; §later: (defcustom omni-log-default-saving-interval 5
 ;; §see: how to handle this. (determine when to save)
-;; §this shouuld go in the major mode to create! [create file.]
-
+;; §this should go in the major mode to create! [create file.]
+;; §??? §what: did i meant by saving functionality
 (provide 'omni-log-logger)
 ;;; omni-log-logger.el ends here
