@@ -88,6 +88,12 @@
   "Send back the eventual buffer with specified NAME."
   (ht-get omni-log-logger-index name nil))
 
+(defun omni-log-create (name &optional properties)
+  "Create and return a logger with given NAME and PROPERTIES.
+take care to create the logger function"
+  (let ((logger (omni-log-create-logger name properties)))
+    (omni-log-create-log-function logger)
+    logger))
 
 (defun omni-log-create-logger (name &optional properties)
   "Create and return a logger with given NAME.
