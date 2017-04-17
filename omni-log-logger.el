@@ -72,6 +72,10 @@
   "Get properties of LOGGER."
   (nth 3 (omni-log-check-logger logger)))
 
+(defun omni-log-logger-property (logger key)
+  "Get properties of LOGGER."
+  (cdr (assoc key (omni-log-logger-properties logger))))
+
 ;; §maybe: renaming function
 ;; ¤tmp: test (omni-log-logger-properties a)
 

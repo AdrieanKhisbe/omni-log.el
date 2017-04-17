@@ -89,12 +89,12 @@
   (ht-get omni-log-logger-index name nil))
 
 
-(defun omni-log-create-logger (name &optional filename)
+(defun omni-log-create-logger (name &optional properties)
   "Create and return a logger with given NAME.
 
 The logger is both registered and returned to be eventually
-asigned to a variable.  An optional FILENAME to which log will
-be outputed can be provided too.
+asigned to a variable.  An optional PROPERTIES is accepted.
+§TODO: param list!
 
 Warning will be issued if a logger with same NAME already exists."
   ;; ¤idea: keyword to signal intensity-> omni-log-logger-/name/ :info "blable"
@@ -108,7 +108,8 @@ Warning will be issued if a logger with same NAME already exists."
   ;; §todo: then check no name conflict
   (if (omni-log-get-logger name)
       (message "A logger named %s already exists" name)
-      (let ((logger (omni-log--make-logger name `(filename ,filename))))
+    (let ((logger (omni-log--make-logger name properties)))
+      ;; §todo: check provided properties
         (ht-set! omni-log-logger-index name logger)
         logger)))
 
@@ -166,27 +167,36 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
         (warn "There is no logger of name %s." logger-or-name))))
 
 (defun omni-log-message-to-logger (logger message)
-  "Add to LOGGER MESSAGE and display it in the Echo area."
+  "Add to LOGGER given MESSAGE and display it in the Echo area."
   ;; §TODO: add prompt¤
   ;; §later: evaluate message content now. and enable multi format (format style)
-  (let* ((props (omni-log-logger-properties logger))
-         (prompt (if t ">>" ""))
-         (fading t)
+  (let* ((props  (omni-log-logger-properties logger))
+         (prompt (if nil (concat ">>" " ") ""))
+         (fading nil)
          (prompt-face (if fading 'omni-log-fading-prompt-face 'omni-log-prompt-face))
          (message-face (if fading 'omni-log-fading-face 'omni-log-face))
          )
-    (setq message (format "%s %s" (propertize prompt 'face prompt-face)
+    (setq message (format "%s%s" (propertize prompt 'face prompt-face)
                           (propertize message 'face message-face)))
     (omni-log--append-to-logger (omni-log-check-logger logger) message)
     (if fading
-        (let ((timestamp (float-time))) ;; §later: extract a fading function
+        (omni-log-quiet-fading-message message)
+      (omni-log-quiet-message message))))
+    ;;¤note: maybe subst?
+    ;;  message ; ¤see if giving message as return value? [latter when evaluation occur inside? &rest]
+
+
+(defun omni-log-quiet-fading-message (message)
+  "Log given MESSAGE in a fading way"
+ (let ((timestamp (float-time))) ;; §later: extract a fading function
           (modify-face 'omni-log-fading-face ; reset color
                        (face-attribute 'omni-log-face :foreground nil t))
           (omni-log-quiet-message (propertize message 'log-p t 'timestamp timestamp))
-          (-each-indexed (color-gradient-name (face-attribute 'omni-log-fading-face :foreground nil t)
-                                              (let ((background (face-attribute 'omni-log-fading-face :background nil t)))
-                                                (if (equal background "unspecified-bg") "black" background))
-                                            20)
+          (-each-indexed (omni-log-color-gradient-name
+                          (face-attribute 'omni-log-fading-face :foreground nil t)
+                          (let ((background (face-attribute 'omni-log-fading-face :background nil t)))
+                            (if (equal background "unspecified-bg") "black" background))
+                          20)
             (lambda (index color)
               (run-at-time index nil
                            (lambda (col timestamp)
@@ -195,13 +205,7 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
                                         (get-text-property 0 'log-p cm)
                                         (equal timestamp (get-text-property 0 'timestamp cm)))
                                    (modify-face 'omni-log-fading-face col))))
-                           color timestamp))))
-
-        (omni-log-quiet-message message))
-    ;;¤note: maybe subst?
-    ;;  message ; ¤see if giving message as return value? [latter when evaluation occur inside? &rest]
-
-  ))
+                           color timestamp)))))
 
 (defun omni-log--append-to-logger (logger message)
   "Append to LOGGER given MESSAGE."
@@ -231,7 +235,7 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
 
 ;; §see: proposer config avec aliasing des fonctions dans namespace, et advice de message?
 
-(defun color-gradient-name (start end step-number)
+(defun omni-log-color-gradient-name (start end step-number)
   (let ((gradiant (-map
                    (lambda (rgb)
                      (color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb)))

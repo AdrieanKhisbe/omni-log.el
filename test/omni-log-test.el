@@ -9,7 +9,19 @@
     (should (equal "ansible" (omni-log-logger-name test-logger)))
     (omni-log-kill-logger test-logger)))
 
-;; §todo: log with properties
+(ert-deftest can-create-logger-with-properties()
+  (let ((test-logger (omni-log-create-logger "ansible" '((a . "1") (b . 2)))))
+    (should (omni-log-logger-p test-logger))
+    (should (equal "ansible" (omni-log-logger-name test-logger)))
+    (should (equal '((a . "1") (b . 2)) (omni-log-logger-properties test-logger)))
+    (omni-log-kill-logger test-logger)))
+
+
+(ert-deftest can-access-logger-with-properties()
+  (let ((test-logger (omni-log-create-logger "ansible" '((a . "1") (b . 2)))))
+    (should (equal '((a . "1") (b . 2)) (omni-log-logger-properties test-logger)))
+    (should (equal (omni-log-logger-property test-logger 'a) "1"))
+    (omni-log-kill-logger test-logger)))
 
 (ert-deftest can-log-to-created-logger()
   (with-logger "ansible"
