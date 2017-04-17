@@ -5,7 +5,7 @@
 ;; Author: Adrien Becchis <adriean.khisbe@live.fr>
 ;; Created:  2014-07-27
 ;; Version: 0.1.2
-;; Package-Requires: ((emacs "24") (ht "2.0") (s "1.6.1") (dash "1.8.0") )
+;; Package-Requires: ((emacs "24") (ht "2.0") (s "1.6.1") (dash "2.13.0") )
 ;; Url: https://github.com/AdrieanKhisbe/omni-log.el
 ;; Keywords: convenience, languages, tools
 
