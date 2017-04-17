@@ -28,11 +28,14 @@
 (defun message-fading (msg)
   (interactive "s")
   (message "%s" (propertize msg 'face 'fringe))
+  (-each-indexed (color-gradient-name "#b2b2b2"  "#292b2e" 20)
+    (lambda (index color)
+      (run-at-time index nil
+                   (lambda (col)
+                     (modify-face 'fringe col)
+                     ) color)
+      )))
 
   ;; §trigger the fadding
-  (run-at-time 4 nil
-               (lambda ()
-                 (modify-face 'fringe "red")
-                 )))
 
 (message-fading "toto")
