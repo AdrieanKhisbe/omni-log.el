@@ -23,6 +23,9 @@ These enable to create logger and logger function that print message to the
     (let ((my-logger (omni-log-create-logger "ansible" '((prompt . ">x>")))))
       (omni-log-create-log-function my-logger) ;; create a log-ansible function
       my-logger)
+
+    ;; or with a one liner:
+    (omni-log-create "ansible-bis" '((prompt . ">")))
   #+END_SRC
 + Use the logger:
   #+BEGIN_SRC emacs-lisp

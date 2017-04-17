@@ -48,21 +48,26 @@
 
 (defface omni-log-face
   '((t (:inherit default
-                 :weight bold :foreground "SteelBlue1")))
-  "Face used for the first keyword of the tag") ;§TODO: fontdoc
+                 :weight bold :foreground "white")))
+  "Face for the omni-log message")
+(let ((color (face-attribute 'default :foreground nil t)))
+  (modify-face 'omni-log-face (if (equal "unspecified-fg" color) "white" color)))
 
 (defface omni-log-fading-face
   '((t (:inherit omni-log-face)))
-  "Face used for the first keyword of the tag")
+  "Face for the omni-log message when fading")
 
 (defface omni-log-prompt-face
   '((t (:inherit default
                  :weight bold :foreground "red")))
-  "Face used for the first keyword of the tag")
+  "Face for the omni-log prompt")
+(let ((color (face-attribute 'font-lock-keyword-face :foreground nil t)))
+  (modify-face 'omni-log-prompt-face (if (equal "unspecified-fg" color) "red" color)))
+
 
 (defface omni-log-fading-prompt-face
   '((t (:inherit omni-log-prompt-face)))
-  "Face used for the first keyword of the tag")
+  "Face for the omni-log prompt when fading")
 
 
 (defun omni-log-quiet-message (message) ; ¤todo: rest version (would have to splat it)
