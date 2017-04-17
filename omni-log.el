@@ -47,23 +47,16 @@
   "Logger hash containing associating between name and logger.")
 
 (defface omni-log-face
-  '((t (:inherit default
-                 :weight bold :foreground "white")))
+  '((t (:inherit default)))
   "Face for the omni-log message")
-(let ((color (face-attribute 'default :foreground nil t)))
-  (modify-face 'omni-log-face (if (equal "unspecified-fg" color) "white" color)))
 
 (defface omni-log-fading-face
   '((t (:inherit omni-log-face)))
   "Face for the omni-log message when fading")
 
 (defface omni-log-prompt-face
-  '((t (:inherit default
-                 :weight bold :foreground "red")))
+  '((t (:inherit font-lock-keyword-face :weight bold)))
   "Face for the omni-log prompt")
-(let ((color (face-attribute 'font-lock-keyword-face :foreground nil t)))
-  (modify-face 'omni-log-prompt-face (if (equal "unspecified-fg" color) "red" color)))
-
 
 (defface omni-log-fading-prompt-face
   '((t (:inherit omni-log-prompt-face)))
