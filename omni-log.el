@@ -129,8 +129,7 @@ This is not intended for users."
     (function (lambda (message)
                 (format "Log given MESSAGE to the %s logger" (omni-log-logger-name logger))
                 (interactive)
-                (omni-log--append-to-logger logger message)
-                (omni-log-quiet-message message)))))
+                (omni-log-message-to-logger logger message)))))
 ;;¤note: maybe subst?
 ;;; ¤note: inlined, without check
 
