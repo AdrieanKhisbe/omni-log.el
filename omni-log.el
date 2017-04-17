@@ -24,16 +24,16 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary:
-
-;; Logging Utilities for packages.
-;; Offer function to log messages to dedicated buffers
-
 ;;; Building Notes:
 
 ;; far too early [and pretentious] to call it `l' the 'the long lost logging api' ^^
 
 ;; §IMP: DETERMINE EXTERIOR API YOU WANNA, and INDIVIDUAL COMPONENTS!!
+
+;;; Commentary:
+
+;; Logging Utilities for packages.
+;; Offer function to log messages to dedicated buffers
 
 ;;; Code:
 
