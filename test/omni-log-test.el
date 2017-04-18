@@ -71,3 +71,8 @@
     (log-ansible "Working %s %d!" "on" 42)
     (with-current-buffer (omni-log-logger-buffer test-logger)
       (should (equal (buffer-string) "Working on 42!\n")))))
+
+;; ¤> color utils
+(ert-deftest color-gradient-name()
+  (should (equal (omni-log-color-gradient-name "black" "white" 4)
+                 '("black" "#333333" "#666666" "#999999" "#cccccc" "white"))))

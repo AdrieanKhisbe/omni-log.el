@@ -43,7 +43,7 @@
 (require 'color)
 (require 'omni-log-logger)
 
-(defvar omni-log-logger-index (ht) ; §maybe create Message equivalent? ¤maybe: alist
+(defvar omni-log-logger-index (ht)
   "Logger hash containing associating between name and logger.")
 
 (defface omni-log-face
@@ -103,8 +103,7 @@ asigned to a variable.  An optional PROPERTIES is accepted.
 Warning will be issued if a logger with same NAME already exists."
   ;; ¤idea: keyword to signal intensity-> omni-log-logger-/name/ :info "blable"
 
-  ;; §maybe: anonym logger?
-  ;; §otherParam: filename, saving frequenci, etc.
+  ;; §otherParam: filename, saving frequencing etc.
   ;; §keywordp?
   ;; §maybe: create holding var and functions? [maybe at a higher level?]
   (interactive "sName of the logger: ")
