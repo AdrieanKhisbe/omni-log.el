@@ -202,7 +202,7 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
                 (let ((foreground (face-attribute 'omni-log-fading-face :foreground nil t)))
                   (if (equal foreground "unspecified-fg") "white" foreground))
                 (let ((background (face-attribute 'omni-log-fading-face :background nil t)))
-                  (if (equal background "unspecified-bg") "black" background))
+                  (if (or (equal background "unspecified-bg") (equal background 'unspecified)) "black" background))
                 nstep)
                (omni-log-color-gradient-name
                 (let ((foreground (face-attribute 'omni-log-fading-prompt-face :foreground nil t)))

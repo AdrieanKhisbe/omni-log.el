@@ -40,6 +40,7 @@
             (:send-report nil)
             (:report-file "/tmp/undercover-report.json"))
 (require 'ert)
+(require 'ert-async)
 (require 'omni-log-logger)
 (require 'omni-log)
 

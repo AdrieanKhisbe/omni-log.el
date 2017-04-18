@@ -72,7 +72,17 @@
     (with-current-buffer (omni-log-logger-buffer test-logger)
       (should (equal (buffer-string) "Working on 42!\n")))))
 
-;; ¤> color utils
+;; ¤> color utils and fading
 (ert-deftest color-gradient-name()
   (should (equal (omni-log-color-gradient-name "black" "white" 4)
                  '("black" "#333333" "#666666" "#999999" "#cccccc" "white"))))
+
+(ert-deftest-async fading-function (done)
+ (modify-face 'omni-log-face "red" "blue")
+ (omni-log-quiet-fading-message "Fading" 0.1 0.5)
+ (should (equal (face-attribute 'omni-log-fading-face :foreground) "red"))
+ (run-at-time 1 nil
+   (lambda (callback)
+     ;; (should (equal (face-attribute 'omni-log-fading-face :foreground nil t) "green"))
+     ;; not working cause current-message don't work
+     (funcall callback)) done))
