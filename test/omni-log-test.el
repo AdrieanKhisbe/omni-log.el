@@ -30,10 +30,18 @@
     (should (equal (omni-log-logger-property test-logger 'c 2) 2))
     (omni-log-kill-logger test-logger)))
 
-(ert-deftest can-access-logger-and-function-in-one-call()
+(ert-deftest can-create-logger-and-function-in-one-call()
   (let ((test-logger (omni-log-create "ansible" '((a . "1") (b . 2)))))
     (should (equal '((a . "1") (b . 2)) (omni-log-logger-properties test-logger)))
     (should (fboundp 'log-ansible))
+    (omni-log-kill-logger test-logger)))
+
+(ert-deftest modify-and-set-logger-property ()
+  (let ((test-logger (omni-log-create-logger "ansible" '((a . "1") (b . 2)))))
+    (omni-log-logger-set-property test-logger 'a 1)
+    (omni-log-logger-set-property test-logger 'c 3)
+    (should (equal '((a . 1) (b . 2) (c . 3)) (omni-log-logger-properties test-logger)))
+
     (omni-log-kill-logger test-logger)))
 
 (ert-deftest can-log-to-created-logger()

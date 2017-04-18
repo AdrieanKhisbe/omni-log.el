@@ -77,6 +77,15 @@
   (let ((value (cdr (assoc key (omni-log-logger-properties logger)))))
     (if default (or value default) value)))
 
+(defun omni-log-logger-set-property (logger key value)
+  "Get KEY property of LOGGER with eventual DEFAULT."
+  (let ((assoc (assoc key (omni-log-logger-properties logger)))
+        (props (omni-log-logger-properties logger)))
+    (if assoc (setcdr assoc value)
+      (progn
+        (add-to-list 'props `(,key . ,value) t)
+        (setf (nth 3 logger) props)))))
+
 ;; §maybe: renaming function
 ;; ¤tmp: test (omni-log-logger-properties a)
 
