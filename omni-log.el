@@ -151,23 +151,21 @@ This function would be named `log-' followed by logger name"
 This is not intended for users."
   ;; ¤note: beware macro name conflict: var name must be different from the one used in log.
   (defalias function-name
-    (function (lambda (message)
+    (function (lambda (message &rest args)
                 (format "Log given MESSAGE to the %s logger" (omni-log-logger-name logger))
                 (interactive "s")
-                (omni-log-message-to-logger logger message)))))
-;;¤note: maybe subst?
-;;; ¤note: inlined, without check
+                (apply 'omni-log-message-to-logger logger message args)))))
 
-(defun log (logger-or-name message); rest-args to do
+(defun log (logger-or-name format-string &rest args); rest-args to do
   "Log to specified LOGGER-OR-NAME given MESSAGE.
 LOGGER-OR-NAME is either a logger or the name of the existing logger"
     (let ((logger (omni-log-logger logger-or-name)))
       (if logger
-          (omni-log-message-to-logger logger message)
+          (apply 'omni-log-message-to-logger logger format-string args)
         (warn "There is no logger of name %s." logger-or-name))))
 
 (defun omni-log-message-to-logger (logger format-string &rest args)
-  "Add to LOGGER given MESSAGE and display it in the Echo area."
+  "Add to LOGGER given FORMAT-STRING and ARGS and display it in the Echo area."
   ;; §TODO: add prompt fading coloration
   ;; §later: evaluate message content now. and enable multi format (format style)
   (let* ((prompt-prop (omni-log-logger-property logger 'prompt))
@@ -177,7 +175,7 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
          (fading-duration (omni-log-logger-property logger 'fading-duration))
          (prompt-face (if fading 'omni-log-fading-prompt-face 'omni-log-prompt-face))
          (message-face (if fading 'omni-log-fading-face 'omni-log-face))
-         (message (eval `(format ,format-string ,@args)))
+         (message (apply 'format format-string args))
          (message (format "%s%s" (propertize prompt 'face prompt-face)
                           (propertize message 'face message-face))))
     (omni-log--append-to-logger (omni-log-check-logger logger) message)

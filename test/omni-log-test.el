@@ -64,3 +64,10 @@
       (log-yo "Working!")
       (with-current-buffer (omni-log-logger-buffer test-logger)
         (should (equal (buffer-string) "Working!\n"))))))
+
+(ert-deftest can-log-with-rest-message()
+  (with-logger "ansible"
+    (omni-log-create-log-function test-logger)
+    (log-ansible "Working %s %d!" "on" 42)
+    (with-current-buffer (omni-log-logger-buffer test-logger)
+      (should (equal (buffer-string) "Working on 42!\n")))))
