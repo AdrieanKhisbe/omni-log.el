@@ -158,19 +158,15 @@ This is not intended for users."
 ;;¤note: maybe subst?
 ;;; ¤note: inlined, without check
 
-;; §maybe: omni-log-log to current. -> set current or latest register?
-
-(defun log (logger-or-name message)
+(defun log (logger-or-name message); rest-args to do
   "Log to specified LOGGER-OR-NAME given MESSAGE.
 LOGGER-OR-NAME is either a logger or the name of the existing logger"
-  ;; §maybe: optional log-or-name. would use default if not set
-  ;; §FIXME Refactor after renaming
     (let ((logger (omni-log-logger logger-or-name)))
       (if logger
           (omni-log-message-to-logger logger message)
         (warn "There is no logger of name %s." logger-or-name))))
 
-(defun omni-log-message-to-logger (logger message)
+(defun omni-log-message-to-logger (logger format-string &rest args)
   "Add to LOGGER given MESSAGE and display it in the Echo area."
   ;; §TODO: add prompt fading coloration
   ;; §later: evaluate message content now. and enable multi format (format style)
@@ -181,6 +177,7 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
          (fading-duration (omni-log-logger-property logger 'fading-duration))
          (prompt-face (if fading 'omni-log-fading-prompt-face 'omni-log-prompt-face))
          (message-face (if fading 'omni-log-fading-face 'omni-log-face))
+         (message (eval `(format ,format-string ,@args)))
          (message (format "%s%s" (propertize prompt 'face prompt-face)
                           (propertize message 'face message-face))))
     (omni-log--append-to-logger (omni-log-check-logger logger) message)
