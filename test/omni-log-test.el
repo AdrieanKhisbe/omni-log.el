@@ -49,28 +49,24 @@
 (ert-deftest can-log-to-created-logger()
   (let ((test-logger (omni-log-create-logger "ansible")))
     (omni-log-message-to-logger test-logger "42")
-    (with-current-buffer (omni-log-logger-buffer test-logger)
-      (should (equal (buffer-string) "42\n")))
+    (should-log test-logger "42\n")
     (omni-log-kill-logger test-logger)))
 
 (ert-deftest can-create-logger-method()
   (with-logger "ansible"
     (log-ansible "Working!")
-    (with-current-buffer (omni-log-logger-buffer test-logger)
-      (should (equal (buffer-string) "Working!\n")))))
+    (should-log test-logger "Working!\n")))
 
 (ert-deftest can-create-logger-method-with-variable-name()
   (let ((name "yo"))
     (with-logger name
       (log-yo "Working!")
-      (with-current-buffer (omni-log-logger-buffer test-logger)
-        (should (equal (buffer-string) "Working!\n"))))))
+      (should-log test-logger "Working!\n"))))
 
 (ert-deftest can-log-with-rest-message()
   (with-logger "ansible"
     (log-ansible "Working %s %d!" "on" 42)
-    (with-current-buffer (omni-log-logger-buffer test-logger)
-      (should (equal (buffer-string) "Working on 42!\n")))))
+    (should-log test-logger "Working on 42!\n")))
 
 ;; ¤> color utils and fading
 (ert-deftest color-gradient-name()

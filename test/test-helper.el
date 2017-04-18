@@ -40,6 +40,10 @@
      ,@body
      (omni-log-kill-logger test-logger)))
 
+(defun should-log (logger message)
+  (with-current-buffer (omni-log-logger-buffer logger)
+    (should (equal (buffer-string) message))))
+
 (require 'undercover)
 (undercover "*.el" "omni-log/*.el"
             (:exclude "*-test.el")
