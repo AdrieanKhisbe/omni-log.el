@@ -179,6 +179,7 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
          (message (format "%s%s" (propertize prompt 'face prompt-face)
                           (propertize message 'face message-face))))
     (omni-log--append-to-logger (omni-log-check-logger logger) message)
+    ;; §fixme: fading should not occur in the buffer log!
     (if fading
         (omni-log-quiet-fading-message message fading-delay fading-duration)
       (omni-log-quiet-message message))))
@@ -193,21 +194,34 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
         (nstep 30))
           (modify-face 'omni-log-fading-face ; reset color
                        (face-attribute 'omni-log-face :foreground nil t))
+          (modify-face 'omni-log-fading-prompt-face ; reset color
+                       (face-attribute 'omni-log-prompt-face :foreground nil t))
           (omni-log-quiet-message (propertize message 'log-p t 'timestamp timestamp))
-          (-each-indexed (omni-log-color-gradient-name
-                          (face-attribute 'omni-log-fading-face :foreground nil t)
-                          (let ((background (face-attribute 'omni-log-fading-face :background nil t)))
-                            (if (equal background "unspecified-bg") "black" background))
-                          nstep)
-            (lambda (index color)
+          (-each-indexed
+              (-zip
+               (omni-log-color-gradient-name
+                (let ((foreground (face-attribute 'omni-log-fading-face :foreground nil t)))
+                  (if (equal foreground "unspecified-fg") "white" foreground))
+                (let ((background (face-attribute 'omni-log-fading-face :background nil t)))
+                  (if (equal background "unspecified-bg") "black" background))
+                nstep)
+               (omni-log-color-gradient-name
+                (let ((foreground (face-attribute 'omni-log-fading-prompt-face :foreground nil t)))
+                  (if (or (equal foreground "unspecified-fg") (equal foreground 'unspecified)) "white" foreground))
+                (let ((background (face-attribute 'omni-log-fading-prompt-face :background nil t)))
+                  (if (or (equal background "unspecified-bg") (equal background 'unspecified)) "black" background))
+               nstep)
+               )
+            (lambda (index colors)
               (run-at-time (+ delay (* index (/ (float duration) nstep))) nil
-                           (lambda (col timestamp)
+                           (lambda (cols timestamp)
                              (let ((cm (current-message)))
-                               (if (and cm
+                               (when (and cm
                                         (get-text-property 0 'log-p cm)
                                         (equal timestamp (get-text-property 0 'timestamp cm)))
-                                   (modify-face 'omni-log-fading-face col))))
-                           color timestamp)))))
+                                 (modify-face 'omni-log-fading-face (car cols))
+                                 (modify-face 'omni-log-fading-prompt-face (cdr cols)))))
+                           colors timestamp)))))
 
 (defun omni-log--append-to-logger (logger message)
   "Append to LOGGER given MESSAGE."
