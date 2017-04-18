@@ -43,8 +43,8 @@
     (omni-log-logger-set-property test-logger 'a 1)
     (omni-log-logger-set-property test-logger 'c 3)
     (should (equal '((a . 1) (b . 2) (c . 3)) (omni-log-logger-properties test-logger)))
-
     (omni-log-kill-logger test-logger)))
+
 ;; ¤> Logging
 (ert-deftest can-log-to-created-logger()
   (let ((test-logger (omni-log-create-logger "ansible")))
@@ -67,6 +67,17 @@
   (with-logger "ansible"
     (log-ansible "Working %s %d!" "on" 42)
     (should-log test-logger "Working on 42!\n")))
+
+(ert-deftest can-log-with-prompt ()
+  (with-logger-opt "prompt" '((prompt . ">>"))
+                   (log-prompt "Toto")
+                   (should-log test-logger ">> Toto\n")))
+
+(ert-deftest can-log-with-fading ()
+  (with-logger-opt "fading" '((fading . t))
+    (modify-face 'omni-log-face "red" "blue") ; ¤hack
+    (log-fading "Toto")
+    (should-log test-logger "Toto\n")))
 
 ;; ¤> color utils and fading
 (ert-deftest color-gradient-name()
