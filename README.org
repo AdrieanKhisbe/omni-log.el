@@ -20,9 +20,10 @@ These enable to create logger and logger function that print message to the
   #+BEGIN_SRC emacs-lisp
     (require 'omni-log)
 
-    (let ((my-logger (omni-log-create-logger "ansible" '((prompt . ">x>")))))
-      (omni-log-create-log-function my-logger) ;; create a log-ansible function
-      my-logger)
+    (setq my-logger (let ((my-logger (omni-log-create-logger "ansible" '((prompt . ">x>")))))
+                      (omni-log-create-log-function my-logger) ;; create a log-ansible function
+                      my-logger))
+    ;; (ansible is a "category of fictional device or technology capable of instantaneous or superluminal communication")
 
     ;; or with a one liner:
     (omni-log-create "ansible-bis" '((prompt . ">")))
@@ -30,9 +31,20 @@ These enable to create logger and logger function that print message to the
 + Use the logger:
   #+BEGIN_SRC emacs-lisp
     (logger-ansible "my message")
-    ;; §later: rest options
-  #+END_SRC
+    (logger-ansible "Hello %s" "World")
 
+    (log "ansible" "Coucou :)")
+    (log my-logger "Log all the things")
+  #+END_SRC
++ Modify the logger afterward
+  #+BEGIN_SRC emacs-lisp
+    ;; set the fading option t the logger
+    (omni-log-logger-set-property my-logger 'fading t)
+    (omni-log-logger-set-property my-logger 'fading nil)
+
+    ;; destroy the logger once done
+    (omni-log-kill-logger my-logger)
+  #+END_SRC
 
 An omni-log can take an extra set of option in an alist to customize it's behavior.
 Here is the list
