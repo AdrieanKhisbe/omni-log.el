@@ -197,16 +197,16 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
           (omni-log-quiet-message (propertize message 'log-p t 'timestamp timestamp))
           (-each-indexed
               (-zip
-               (omni-log-color-gradient-name
+               (omni-log-color-gradient-name ; text color
                 (let ((foreground (face-attribute 'omni-log-fading-face :foreground nil t)))
                   (if (equal foreground "unspecified-fg") "white" foreground))
                 (let ((background (face-attribute 'omni-log-fading-face :background nil t)))
                   (if (or (equal background "unspecified-bg") (equal background 'unspecified)) "black" background))
                 nstep)
-               (omni-log-color-gradient-name
+               (omni-log-color-gradient-name ; prompt color
                 (let ((foreground (face-attribute 'omni-log-fading-prompt-face :foreground nil t)))
                   (if (or (equal foreground "unspecified-fg") (equal foreground 'unspecified)) "white" foreground))
-                (let ((background (face-attribute 'omni-log-fading-prompt-face :background nil t)))
+                (let ((background (face-attribute 'omni-log-fading-face :background nil t)))
                   (if (or (equal background "unspecified-bg") (equal background 'unspecified)) "black" background))
                nstep)
                )
