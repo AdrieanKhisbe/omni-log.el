@@ -165,23 +165,22 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
 
 (defun omni-log-message-to-logger (logger format-string &rest args)
   "Add to LOGGER given FORMAT-STRING and ARGS and display it in the Echo area."
-  ;; §TODO: add prompt fading coloration
   ;; §later: evaluate message content now. and enable multi format (format style)
   (let* ((prompt-prop (omni-log-logger-property logger 'prompt))
          (prompt (if prompt-prop (concat prompt-prop " ") ""))
          (fading (omni-log-logger-property logger 'fading))
          (fading-delay (omni-log-logger-property logger 'fading-delay))
          (fading-duration (omni-log-logger-property logger 'fading-duration))
-         (prompt-face (if fading 'omni-log-fading-prompt-face 'omni-log-prompt-face))
-         (message-face (if fading 'omni-log-fading-face 'omni-log-face))
          (message (apply 'format format-string args))
-         (message (format "%s%s" (propertize prompt 'face prompt-face)
-                          (propertize message 'face message-face))))
-    (omni-log--append-to-logger (omni-log-check-logger logger) message)
+         (message-static (format "%s%s" (propertize prompt 'face 'omni-log-prompt-face)
+                                 (propertize message 'face 'omni-log-face)))
+         (message-fading (format "%s%s" (propertize prompt 'face 'omni-log-fading-prompt-face)
+                                 (propertize message 'face 'omni-log-fading-face))))
+    (omni-log--append-to-logger (omni-log-check-logger logger) message-static)
     ;; §fixme: fading should not occur in the buffer log!
     (if fading
-        (omni-log-quiet-fading-message message fading-delay fading-duration)
-      (omni-log-quiet-message message))))
+        (omni-log-quiet-fading-message message-fading fading-delay fading-duration)
+      (omni-log-quiet-message message-static))))
     ;; ¤see: if giving message as return value? [latter when evaluation occur inside? &rest]
 
 
