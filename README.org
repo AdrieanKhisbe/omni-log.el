@@ -9,13 +9,20 @@
 
 /Log All The Things!/
 
-** Description
-This /in early development/ library is to provide logging faculty.
-
-These enable to create logger and logger function that print message to the
+* Description
+This library provides logging faculty.
+It enable you to create logger and logger function that print message to the
 /echo Area/ and append them in a dedicated buffer.
 
-** Usage
+#+BEGIN_SRC emacs-lisp
+  (require 'omni-log)
+
+  (omni-log-create-logger "my-logger")
+  (log-my-logger "Hello World")
+  ;; Hello World print in the echo area and *my-logger* buffer
+#+END_SRC
+
+* Usage
 + Create a logger:
   #+BEGIN_SRC emacs-lisp
     (require 'omni-log)
@@ -53,10 +60,11 @@ Here is the list
 - fading-delay :: delay in second after which the fading begin
 - fading-duration :: duration in second of the fading effect
 
-** Installation
+* Installation
 Omni-log is available on melpa, just do a =(package-install 'omni-log)= to retrieve it
 
-** Notes
-This is still a prototype. I use it on my =omni-quotes= package, but API is not frozen yet.
+* Notes
 
-*If you have any remark, refactor suggestion or else, just pose an issue ;)
+It works but this is still a prototype. I use it on my =omni-quotes= package, but API is not frozen yet.
+
+*If you have any remark, refactor suggestion or else, just pose an issue ;)*
