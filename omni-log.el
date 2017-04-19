@@ -162,7 +162,7 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
         (warn "There is no logger of name %s." logger-or-name))))
 
 (defun omni-log-centering (text)
-  (s-center (- (window-total-width (get-buffer-window  (get-buffer "*Echo Area 0*"))) 3) text))
+  (s-center (- (frame-total-cols) 3) text))
 
 (defun omni-log-message-to-logger (logger format-string &rest args)
   "Add to LOGGER given FORMAT-STRING and ARGS and display it in the Echo area.
@@ -235,16 +235,7 @@ Returns formatted message."
     (newline))))
 
 ;; §todo: maybe wmessage + qmessage (or t transient)
-
-;; §idea: add padding, centering functionnality.
-;; ¤maybe regroup in some class with all the other formating fonctionnality: color. etc
-
-;; ¤note: access to echo area with (get-buffer " *Echo Area 0*")
-;; modif with setq-local.
-;;  get size of echo area with:
-;; (window-total-width (get-buffer-window  (get-buffer "*Echo Area 0*")))
-
-;; §note: not accessible with C-x b
+;; §? wmessage and qmessage §???
 
 ;; §see: proposer config avec aliasing des fonctions dans namespace, et advice de message?
 
@@ -254,7 +245,6 @@ Returns formatted message."
                       (color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb)))
                    (color-gradient (color-name-to-rgb start) (color-name-to-rgb end) step-number))))
     (-flatten (list start gradiant end))))
-
 
 (provide 'omni-log)
 ;;; omni-log.el ends here
