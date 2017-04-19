@@ -28,8 +28,6 @@
 
 ;; far too early [and pretentious] to call it `l' the 'the long lost logging api' ^^
 
-;; §IMP: DETERMINE EXTERIOR API YOU WANNA, and INDIVIDUAL COMPONENTS!!
-
 ;;; Commentary:
 
 ;; Logging Utilities for packages.
@@ -163,12 +161,16 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
           (apply 'omni-log-message-to-logger logger format-string args)
         (warn "There is no logger of name %s." logger-or-name))))
 
+(defun omni-log-centering (text)
+  (s-center (- (window-total-width (get-buffer-window  (get-buffer "*Echo Area 0*"))) 3) text))
+
 (defun omni-log-message-to-logger (logger format-string &rest args)
   "Add to LOGGER given FORMAT-STRING and ARGS and display it in the Echo area.
 Returns formatted message."
   ;; §later: evaluate message content now. and enable multi format (format style)
   (let* ((prompt-prop (omni-log-logger-property logger 'prompt))
          (prompt (if prompt-prop (concat prompt-prop " ") ""))
+         (centering (omni-log-logger-property logger 'centering))
          (fading (omni-log-logger-property logger 'fading))
          (fading-delay (omni-log-logger-property logger 'fading-delay))
          (fading-duration (omni-log-logger-property logger 'fading-duration))
@@ -179,8 +181,8 @@ Returns formatted message."
                                  (propertize message 'face 'omni-log-fading-face))))
     (omni-log--append-to-logger (omni-log-check-logger logger) message-static)
     (if fading
-        (omni-log-quiet-fading-message message-fading fading-delay fading-duration)
-      (omni-log-quiet-message message-static))
+        (omni-log-quiet-fading-message (if centering (omni-log-fading message-static) message-fading) fading-delay fading-duration)
+      (omni-log-quiet-message (if centering (omni-log-centering message-static) message-static)))
     message-static))
 
 (defun omni-log-quiet-fading-message (message &optional delay duration)
@@ -236,8 +238,6 @@ Returns formatted message."
 
 ;; §idea: add padding, centering functionnality.
 ;; ¤maybe regroup in some class with all the other formating fonctionnality: color. etc
-;; omni-log-apply-font
-;; ¤see: specific font
 
 ;; ¤note: access to echo area with (get-buffer " *Echo Area 0*")
 ;; modif with setq-local.
@@ -251,7 +251,7 @@ Returns formatted message."
 (defun omni-log-color-gradient-name (start end step-number)
   (let ((gradiant (-map
                    (lambda (rgb)
-                     (color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb)))
+                      (color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb)))
                    (color-gradient (color-name-to-rgb start) (color-name-to-rgb end) step-number))))
     (-flatten (list start gradiant end))))
 
