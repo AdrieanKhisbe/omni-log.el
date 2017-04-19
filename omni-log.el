@@ -190,7 +190,7 @@ Returns formatted message."
   (let ((timestamp (float-time))
         (delay (or delay 2))
         (duration (or duration 5))
-        (nstep 30))
+        (nstep (floor (* duration 10))))
           (modify-face 'omni-log-fading-face ; reset color
                        (face-attribute 'omni-log-face :foreground nil t))
           (modify-face 'omni-log-fading-prompt-face ; reset color
@@ -233,11 +233,6 @@ Returns formatted message."
       ;; §todo: call to special formater on message: add timestamp (maybe calling function? (if can be retrieved from namespace))
       ;; ¤note: message is supposed to be already formated. (-> color empahsize inside should be already done)
     (newline))))
-
-;; §todo: maybe wmessage + qmessage (or t transient)
-;; §? wmessage and qmessage §???
-
-;; §see: proposer config avec aliasing des fonctions dans namespace, et advice de message?
 
 (defun omni-log-color-gradient-name (start end step-number)
   (let ((gradiant (-map
