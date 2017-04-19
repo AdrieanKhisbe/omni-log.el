@@ -4,6 +4,11 @@ All notable changes to *omni-log.el* will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
+## [0.3.2] - 2017-04-20
+### Added
+- centering of the prompt
+### Changed
+- dynamic number of step in the fading
 ## [0.3.1] - 2017-04-19
 ### Changed
 -  omni-log-message-to-logger now return formated message
@@ -27,7 +32,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.x] - 2015-06-04
 - "Initial" stable Release
 
-[unreleased]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.1...HEAD
+[unreleased]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.1.2....v0.2.0
