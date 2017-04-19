@@ -164,7 +164,8 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
         (warn "There is no logger of name %s." logger-or-name))))
 
 (defun omni-log-message-to-logger (logger format-string &rest args)
-  "Add to LOGGER given FORMAT-STRING and ARGS and display it in the Echo area."
+  "Add to LOGGER given FORMAT-STRING and ARGS and display it in the Echo area.
+Returns formatted message."
   ;; §later: evaluate message content now. and enable multi format (format style)
   (let* ((prompt-prop (omni-log-logger-property logger 'prompt))
          (prompt (if prompt-prop (concat prompt-prop " ") ""))
@@ -177,12 +178,10 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
          (message-fading (format "%s%s" (propertize prompt 'face 'omni-log-fading-prompt-face)
                                  (propertize message 'face 'omni-log-fading-face))))
     (omni-log--append-to-logger (omni-log-check-logger logger) message-static)
-    ;; §fixme: fading should not occur in the buffer log!
     (if fading
         (omni-log-quiet-fading-message message-fading fading-delay fading-duration)
-      (omni-log-quiet-message message-static))))
-    ;; ¤see: if giving message as return value? [latter when evaluation occur inside? &rest]
-
+      (omni-log-quiet-message message-static))
+    message-static))
 
 (defun omni-log-quiet-fading-message (message &optional delay duration)
   "Log given MESSAGE in a fading way"

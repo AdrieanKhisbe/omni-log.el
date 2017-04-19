@@ -83,7 +83,7 @@
 
 (ert-deftest can-log-to-created-logger ()
   (let ((test-logger (omni-log-create-logger "ansible")))
-    (omni-log-message-to-logger test-logger "42")
+    (should (equal (omni-log-message-to-logger test-logger "42") "42"))
     (should-log test-logger "42\n")
     (omni-log-kill-logger test-logger)))
 
