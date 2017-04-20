@@ -60,15 +60,16 @@
   '((t (:inherit omni-log-prompt-face)))
   "Face for the omni-log prompt when fading")
 
-
-(defun omni-log-quiet-message (message &optional centered) ; ¤todo: rest version (would have to splat it)
-  "Print a MESSAGE in the loggin area without recording it in the *Messages* buffer."
+(defun omni-log-quiet-message (message &optional centered)
+  "Print a MESSAGE in the loggin area without recording it in the *Messages* buffer.
+Message will be CENTERED if option is provided."
   ;; inspired from eldoc
   (let ((message-log-max nil))
     ;; ¤note: centering, or right alignment should happen here.
     ;;        but choice to do so is responsability of the buffer.
     ;;        ¤maybe create another no log padding,whatever, and message-to-log would dispacth
     ;;        [object oriented programming where are you when we need you?]
+    ;;        this prevent to have a rest version
     (message  (if centered (omni-log--centering message) message))))
 
 (defun omni-log--centering (text)
