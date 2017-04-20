@@ -59,7 +59,7 @@ Here is the list
 - fading :: boolean option to have the message fade away
 - fading-delay :: delay in second after which the fading begin
 - fading-duration :: duration in second of the fading effect
-- centering :: are the messages centered in the echo area
+- centered :: are the messages centered in the echo area
 
 * Installation
 Omni-log is available on melpa, just do a =(package-install 'omni-log)= to retrieve it

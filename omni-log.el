@@ -4,7 +4,7 @@
 
 ;; Author: Adrien Becchis <adriean.khisbe@live.fr>
 ;; Created:  2014-07-27
-;; Version: 0.3.1
+;; Version: 0.3.3
 ;; Package-Requires: ((emacs "24") (ht "2.0") (s "1.6.1") (dash "2.13.0"))
 ;; Url: https://github.com/AdrieanKhisbe/omni-log.el
 ;; Keywords: convenience, languages, tools
@@ -100,7 +100,7 @@ take care to create the logger function"
 
 The logger is both registered and returned to be eventually
 asigned to a variable.  An optional PROPERTIES is accepted.
-§TODO: param list!
+§TODO: param list options
 
 Warning will be issued if a logger with same NAME already exists."
   ;; ¤idea: keyword to signal intensity-> omni-log-logger-/name/ :info "blable"
