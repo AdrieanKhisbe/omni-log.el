@@ -61,7 +61,7 @@
   "Face for the omni-log prompt when fading")
 
 
-(defun omni-log-quiet-message (message) ; ¤todo: rest version (would have to splat it)
+(defun omni-log-quiet-message (message &optional centered) ; ¤todo: rest version (would have to splat it)
   "Print a MESSAGE in the loggin area without recording it in the *Messages* buffer."
   ;; inspired from eldoc
   (let ((message-log-max nil))
@@ -69,7 +69,10 @@
     ;;        but choice to do so is responsability of the buffer.
     ;;        ¤maybe create another no log padding,whatever, and message-to-log would dispacth
     ;;        [object oriented programming where are you when we need you?]
-    (message message)))
+    (message  (if centered (omni-log--centering message) message))))
+
+(defun omni-log--centering (text)
+  (s-center (- (frame-total-cols) 3) text))
 
 ;; §then color. (highligh/bold: ou plus `emphasize')
 ;; insert color in message: log-message-with-color
@@ -161,16 +164,13 @@ LOGGER-OR-NAME is either a logger or the name of the existing logger"
           (apply 'omni-log-message-to-logger logger format-string args)
         (warn "There is no logger of name %s." logger-or-name))))
 
-(defun omni-log-centering (text)
-  (s-center (- (frame-total-cols) 3) text))
-
 (defun omni-log-message-to-logger (logger format-string &rest args)
   "Add to LOGGER given FORMAT-STRING and ARGS and display it in the Echo area.
 Returns formatted message."
   ;; §later: evaluate message content now. and enable multi format (format style)
   (let* ((prompt-prop (omni-log-logger-property logger 'prompt))
          (prompt (if prompt-prop (concat prompt-prop " ") ""))
-         (centering (omni-log-logger-property logger 'centering))
+         (centered (omni-log-logger-property logger 'centered))
          (fading (omni-log-logger-property logger 'fading))
          (fading-delay (omni-log-logger-property logger 'fading-delay))
          (fading-duration (omni-log-logger-property logger 'fading-duration))
@@ -181,11 +181,11 @@ Returns formatted message."
                                  (propertize message 'face 'omni-log-fading-face))))
     (omni-log--append-to-logger (omni-log-check-logger logger) message-static)
     (if fading
-        (omni-log-quiet-fading-message (if centering (omni-log-fading message-static) message-fading) fading-delay fading-duration)
-      (omni-log-quiet-message (if centering (omni-log-centering message-static) message-static)))
+        (omni-log-quiet-fading-message message-fading centered fading-delay fading-duration)
+      (omni-log-quiet-message message-static centered))
     message-static))
 
-(defun omni-log-quiet-fading-message (message &optional delay duration)
+(defun omni-log-quiet-fading-message (message &optional centered delay duration)
   "Log given MESSAGE in a fading way"
   (let* ((timestamp (float-time))
         (delay (or delay 2))
@@ -195,7 +195,7 @@ Returns formatted message."
                        (face-attribute 'omni-log-face :foreground nil t))
           (modify-face 'omni-log-fading-prompt-face ; reset color
                        (face-attribute 'omni-log-prompt-face :foreground nil t))
-          (omni-log-quiet-message (propertize message 'log-p t 'timestamp timestamp))
+          (omni-log-quiet-message (propertize message 'log-p t 'timestamp timestamp) centered)
           (-each-indexed
               (-zip
                (omni-log-color-gradient-name ; text color
