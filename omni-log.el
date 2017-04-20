@@ -187,7 +187,7 @@ Returns formatted message."
 
 (defun omni-log-quiet-fading-message (message &optional delay duration)
   "Log given MESSAGE in a fading way"
-  (let ((timestamp (float-time))
+  (let* ((timestamp (float-time))
         (delay (or delay 2))
         (duration (or duration 5))
         (nstep (floor (* duration 10))))
