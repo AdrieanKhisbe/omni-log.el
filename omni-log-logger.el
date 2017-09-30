@@ -84,7 +84,7 @@
     (if default (or value default) value)))
 
 (defun omni-log-logger-set-property (logger key value)
-  "Get KEY property of LOGGER with eventual DEFAULT."
+  "Set KEY property of LOGGER to VALUE"
   (let ((assoc (assoc key (omni-log-logger-properties logger)))
         (props (omni-log-logger-properties logger)))
     (if assoc (setcdr assoc value)
