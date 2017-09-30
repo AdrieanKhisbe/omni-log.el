@@ -69,9 +69,9 @@
 
 (ert-deftest modify-and-set-logger-property ()
   (let ((test-logger (omni-log-create-logger "ansible" '((a . "1") (b . 2)))))
-    (omni-log-logger-set-property test-logger 'a 1)
+    (omni-log-logger-set-property test-logger 'a 2)
     (omni-log-logger-set-property test-logger 'c 3)
-    (should (equal '((a . 1) (b . 2) (c . 3)) (omni-log-logger-properties test-logger)))
+    (should (equal '((a . 2) (b . 2) (c . 3)) (omni-log-logger-properties test-logger)))
     (omni-log-kill-logger test-logger)))
 
 (ert-deftest check-logger-ko ()
