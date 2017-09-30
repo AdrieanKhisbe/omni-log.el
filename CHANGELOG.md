@@ -4,7 +4,12 @@ All notable changes to *omni-log.el* will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
-#### # [0.3.4] - 2017-09-30
+##### # [0.3.5] - 2017-09-30
+### Added
+- Can now use a symbol as the function name
+### Fixed
+- Documentation hello world using wrong function
+### # [0.3.4] - 2017-09-30
 ### Fixed
 - Wrong documentation about logger
 ## # [0.3.3] - 2017-04-20
@@ -41,7 +46,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.x] - 2015-06-04
 - "Initial" stable Release
 
-[unreleased]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.4...HEAD
+[unreleased]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.5...HEAD
+[0.3.5]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.1...v0.3.2
