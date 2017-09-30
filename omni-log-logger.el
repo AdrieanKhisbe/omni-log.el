@@ -78,19 +78,31 @@
   "Get properties of LOGGER."
   (nth 4 (omni-log-check-logger logger)))
 
+(defvar omni-log-valid-property-list
+  '(prompt fading fading-delay fading-duration centered))
+
+(defun omni-log-ensure-valid-property (key)
+  (when (not (memq key omni-log-valid-property-list))
+    (signal 'wrong-type-argument
+            `(key ,key "is not in `omni-log-valid-property-list'"))))
+
 (defun omni-log-logger-property (logger key &optional default)
   "Get KEY property of LOGGER with eventual DEFAULT."
+  (omni-log-ensure-valid-property key)
   (let ((value (cdr (assoc key (omni-log-logger-properties logger)))))
     (if default (or value default) value)))
 
 (defun omni-log-logger-set-property (logger key value)
   "Get KEY property of LOGGER with eventual DEFAULT."
+  (omni-log-ensure-valid-property key)
   (let ((assoc (assoc key (omni-log-logger-properties logger)))
         (props (omni-log-logger-properties logger)))
     (if assoc (setcdr assoc value)
       (progn
         (add-to-list 'props `(,key . ,value) t)
         (setf (nth 4 logger) props)))))
+
+
 
 ;; §maybe: renaming function
 ;; ¤tmp: test (omni-log-logger-properties a)
