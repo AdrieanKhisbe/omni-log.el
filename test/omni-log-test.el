@@ -18,6 +18,13 @@
     (should (equal "ansible" (omni-log-logger-name test-logger)))
     (omni-log-kill-logger test-logger)))
 
+(ert-deftest can-make-logger-with-symbol ()
+  (let ((test-logger (omni-log--make-logger 'ansible)))
+    (should (omni-log-logger-p test-logger))
+    (should (equal 'ansible (omni-log-logger-symbol test-logger)))
+    (should (equal "ansible" (omni-log-logger-name test-logger)))
+    (omni-log-kill-logger test-logger)))
+
 (ert-deftest cannot-recreate-logger ()
   (let ((test-logger (omni-log-create-logger "ansible")))
     (should (equal (omni-log-create-logger "ansible") "A logger named ansible already exists"))
@@ -66,6 +73,10 @@
     (omni-log-logger-set-property test-logger 'c 3)
     (should (equal '((a . 1) (b . 2) (c . 3)) (omni-log-logger-properties test-logger)))
     (omni-log-kill-logger test-logger)))
+
+(ert-deftest check-logger-ko ()
+  (should-error (omni-log-check-logger "toto"))
+  (should-error (omni-log-check-logger '(fake-logger))))
 
 ;; ¤> Kill buffer
 
