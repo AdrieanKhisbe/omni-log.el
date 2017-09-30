@@ -26,32 +26,28 @@ It enable you to create logger and logger function that print message to the
 + Create a logger:
   #+BEGIN_SRC emacs-lisp
     (require 'omni-log)
-
-    (setq my-logger (let ((my-logger (omni-log-create-logger "ansible" '((prompt . ">x>")))))
-                      (omni-log-create-log-function my-logger) ;; create a log-ansible function
-                      my-logger))
+    (omni-log-create "ansible") ; or  (omni-log-create 'ansible)
     ;; (ansible is a "category of fictional device or technology capable of instantaneous or superluminal communication")
 
-    ;; or with a one liner:
-    (omni-log-create "ansible-bis" '((prompt . ">")))
+    (omni-log-create "ansible-wcp" '((prompt . ">"))) ; with custom prompt
   #+END_SRC
 + Use the logger:
   #+BEGIN_SRC emacs-lisp
     (log-ansible "my message") ; will output the message to *ansible* buffer
     (log-ansible "Hello %s" "World")
 
-    (log "ansible" "Coucou :)")
-    (log my-logger "Log all the things")
+    (log "ansible" "Coucou :)") ; or (log 'ansible "Coucou :)")
   #+END_SRC
 + Modify the logger afterward
   #+BEGIN_SRC emacs-lisp
     ;; set the fading option t the logger
     (omni-log-logger-set-property my-logger 'fading t)
     (omni-log-logger-set-property my-logger 'fading nil)
-
     ;; destroy the logger once done
     (omni-log-kill-logger my-logger)
   #+END_SRC
+
+** Customizing Logger Options
 
 An omni-log can take an extra set of option in an alist to customize it's behavior.
 Here is the list
@@ -60,6 +56,15 @@ Here is the list
 - fading-delay :: delay in second after which the fading begin
 - fading-duration :: duration in second of the fading effect
 - centered :: are the messages centered in the echo area
+
+** Extended Usage
+ If you do not wish to create the logger function with the name =log= you could create
+ a logger and use it as argument to the =log= function:
+
+ #+BEGIN_SRC emacs-lisp
+   (setq my-logger (omni-log-create-logger 'my-logger '((prompt . ">x>"))))
+   (log my-logger "See, no function log-my-logger")
+ #+END_SRC
 
 * Installation
 Omni-log is available on melpa, just do a =(package-install 'omni-log)= to retrieve it
