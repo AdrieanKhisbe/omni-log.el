@@ -17,7 +17,7 @@ It enable you to create logger and logger function that print message to the
 #+BEGIN_SRC emacs-lisp
   (require 'omni-log)
 
-  (omni-log-create-logger "my-logger")
+  (omni-log-create "my-logger")
   (log-my-logger "Hello World")
   ;; Hello World print in the echo area and *my-logger* buffer
 #+END_SRC
