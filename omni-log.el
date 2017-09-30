@@ -73,7 +73,7 @@ Message will be CENTERED if option is provided."
     (message  (if centered (omni-log--centering message) message))))
 
 (defun omni-log--centering (text)
-  (s-center (- (frame-total-cols) 3) text))
+  (s-center (- (frame-width) 3) text))
 
 ;; §then color. (highligh/bold: ou plus `emphasize')
 ;; insert color in message: log-message-with-color
