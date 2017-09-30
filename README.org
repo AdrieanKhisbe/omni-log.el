@@ -37,8 +37,8 @@ It enable you to create logger and logger function that print message to the
   #+END_SRC
 + Use the logger:
   #+BEGIN_SRC emacs-lisp
-    (logger-ansible "my message")
-    (logger-ansible "Hello %s" "World")
+    (log-ansible "my message") ; will output the message to *ansible* buffer
+    (log-ansible "Hello %s" "World")
 
     (log "ansible" "Coucou :)")
     (log my-logger "Log all the things")
