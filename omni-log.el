@@ -84,9 +84,13 @@ Message will be CENTERED if option is provided."
       logger-or-name
     (omni-log-get-logger logger-or-name)))
 
-(defun omni-log-get-logger (name)
+(defun omni-log-get-logger (name-or-symbol)
   "Send back the eventual buffer with specified NAME."
-  (ht-get omni-log-logger-index name nil))
+  (ht-get omni-log-logger-index
+          (if (symbolp name-or-symbol)
+              (symbol-name name-or-symbol)
+            name-or-symbol)
+          nil))
 
 (defun omni-log-create (name &optional properties)
   "Create and return a logger with given NAME and PROPERTIES.

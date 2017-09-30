@@ -11,6 +11,13 @@
     (should (equal "ansible" (omni-log-logger-name test-logger)))
     (omni-log-kill-logger test-logger)))
 
+(ert-deftest can-create-logger-with-symbol ()
+  (let ((test-logger (omni-log-create-logger 'ansible)))
+    (should (omni-log-logger-p test-logger))
+    (should (equal 'ansible (omni-log-logger-symbol test-logger)))
+    (should (equal "ansible" (omni-log-logger-name test-logger)))
+    (omni-log-kill-logger test-logger)))
+
 (ert-deftest cannot-recreate-logger ()
   (let ((test-logger (omni-log-create-logger "ansible")))
     (should (equal (omni-log-create-logger "ansible") "A logger named ansible already exists"))
@@ -21,6 +28,10 @@
     (should (equal (omni-log-logger "ansible") test-logger))
     (omni-log-kill-logger test-logger)))
 
+(ert-deftest can-retrieve-logger-by-symbol ()
+  (let ((test-logger (omni-log-create-logger "ansible")))
+    (should (equal (omni-log-logger 'ansible) test-logger))
+    (omni-log-kill-logger test-logger)))
 
 (ert-deftest can-create-logger-with-properties ()
   (let ((test-logger (omni-log-create-logger "ansible" '((a . "1") (b . 2)))))
@@ -69,8 +80,13 @@
 ;; ¤> Logging
 (ert-deftest log-with-name ()
   (with-logger "ansible"
-    (log "ansible" "Yo")
-    (should-log test-logger "Yo\n")))
+               (log "ansible" "Yo")
+               (should-log test-logger "Yo\n")))
+
+(ert-deftest log-with-name ()
+  (with-logger "ansible"
+               (log 'ansible "Yo")
+               (should-log test-logger "Yo\n")))
 
 (ert-deftest log-with-logger ()
   (with-logger "ansible"

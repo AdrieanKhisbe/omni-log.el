@@ -32,12 +32,14 @@
 ;;; Code:
 
 ;;; ¤> Constructor
-(defun omni-log--make-logger (name &optional properties)
-  "Build a loging buffer object with NAME and eventual PROPERTIES."
+(defun omni-log--make-logger (name-or-symbol &optional properties)
+  "Build a loging buffer object with NAME-OR-SYMBOL and eventual PROPERTIES."
   ;; ¤maybe: precise this is intern function?
   ;; ¤maybe: build properties from keyword at this level?
-  (let* ((buffer (get-buffer-create  (concat "*" name "*")))
-        (logger (list 'logger name buffer properties)))
+  (let* ((name (if (stringp name-or-symbol) name-or-symbol (symbol-name name-or-symbol)))
+         (symbol (if (symbolp name-or-symbol) name-or-symbol (intern name-or-symbol)))
+         (buffer (get-buffer-create  (concat "*" name "*")))
+        (logger (list 'logger name symbol buffer properties)))
     (with-current-buffer buffer
       (read-only-mode)) ; §later: log major mode
     logger))
@@ -64,13 +66,17 @@
   "Get name of LOGGER."
   (nth 1 (omni-log-check-logger logger)))
 
+(defun omni-log-logger-symbol (logger)
+  "Get name of LOGGER."
+  (nth 2 (omni-log-check-logger logger)))
+
 (defun omni-log-logger-buffer (logger)
   "Get buffer of LOGGER."
-  (nth 2 (omni-log-check-logger logger)))
+  (nth 3 (omni-log-check-logger logger)))
 
 (defun omni-log-logger-properties (logger)
   "Get properties of LOGGER."
-  (nth 3 (omni-log-check-logger logger)))
+  (nth 4 (omni-log-check-logger logger)))
 
 (defun omni-log-logger-property (logger key &optional default)
   "Get KEY property of LOGGER with eventual DEFAULT."
@@ -84,7 +90,7 @@
     (if assoc (setcdr assoc value)
       (progn
         (add-to-list 'props `(,key . ,value) t)
-        (setf (nth 3 logger) props)))))
+        (setf (nth 4 logger) props)))))
 
 ;; §maybe: renaming function
 ;; ¤tmp: test (omni-log-logger-properties a)
