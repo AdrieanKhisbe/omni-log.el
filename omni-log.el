@@ -117,7 +117,8 @@ Warning will be issued if a logger with same NAME already exists."
   ;; §todo: then check no name conflict
   (if (omni-log-get-logger name)
       (message "A logger named %s already exists" name)
-    (let ((logger (omni-log--make-logger name properties)))
+    (let* ((name (if (symbolp name) (symbol-name name) name))
+           (logger (omni-log--make-logger name properties)))
       ;; §todo: check provided properties
         (ht-set! omni-log-logger-index name logger)
         logger)))
