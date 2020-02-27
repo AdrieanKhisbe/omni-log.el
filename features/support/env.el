@@ -1,4 +1,5 @@
 (require 'f)
+(require 's)
 
 (defvar omni-log-support-path
   (f-dirname load-file-name))
@@ -11,10 +12,12 @@
 
 (add-to-list 'load-path omni-log-root-path)
 
-(require 'undercover)
-(undercover "*.el" "omni-log/*.el"
+;; conditional?
+(unless (s-matches? "^emacs-24\\.[12]-travis$" (getenv "EVM_EMACS"))
+  (require 'undercover)
+  (undercover "*.el" "omni-log/*.el"
             (:exclude "*-test.el")
-            (:report-file "/tmp/undercover-report.json"))
+            (:report-file "/tmp/undercover-report.json")))
 (require 'omni-log)
 (require 'espuds)
 (require 'ert)

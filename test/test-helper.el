@@ -3,6 +3,7 @@
 ;;; Code:
 
 (require 'f)
+(require 's)
 
 (defvar omni-log-path
   (f-parent (f-this-file)))
@@ -44,11 +45,12 @@
   (with-current-buffer (omni-log-logger-buffer logger)
     (should (equal (buffer-string) message))))
 
-(require 'undercover)
-(undercover "*.el" "omni-log/*.el"
+(unless (s-matches? "^emacs-24\\.[12]-travis$" (getenv "EVM_EMACS"))
+  (require 'undercover)
+  (undercover "*.el" "omni-log/*.el"
             (:exclude "*-test.el")
             (:send-report nil)
-            (:report-file "/tmp/undercover-report.json"))
+            (:report-file "/tmp/undercover-report.json")))
 (require 'ert)
 (require 'ert-async)
 (require 'omni-log-logger)
