@@ -4,6 +4,9 @@ All notable changes to *omni-log.el* will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
+### Fixed
+- Support for emacs 26
+
 ##### # [0.3.6] - 2017-09-30
 ### Changed
 - Restore support for emacs24 by dropping frame-total-col function
