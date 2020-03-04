@@ -4,6 +4,8 @@ All notable changes to *omni-log.el* will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased][unreleased]
+##### # [0.4.0] - 2020-03-04
+release of package refresh 2020 operation in pull request [#3](https://github.com/AdrieanKhisbe/omni-log.el/pull/3)
 ### Fixed
 - Support for emacs 26
 - Renamed entrypoint alias `log` to `-log` to avoid logarithmic colision
@@ -53,7 +55,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [0.1.x] - 2015-06-04
 - "Initial" stable Release
 
-[unreleased]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.6...HEAD
+[unreleased]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.6...v0.4.0
 [0.3.6]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.5...v0.3.6
 [0.3.5]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/AdrieanKhisbe/omni-log.el/compare/v0.3.3...v0.3.4
