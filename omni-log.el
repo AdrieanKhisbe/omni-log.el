@@ -240,11 +240,16 @@ Returns formatted message."
       ;; ¤note: message is supposed to be already formated. (-> color empahsize inside should be already done)
     (newline))))
 
+(if (>= emacs-major-version 26)
+  (defun omni-log--rgb-to-hex(rgb)
+    (color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb) 2))
+  (defun omni-log--rgb-to-hex(rgb)
+    (color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb))))
+
 (defun omni-log-color-gradient-name (start end step-number)
-  (let ((gradiant (-map
-                   (lambda (rgb)
-                      (color-rgb-to-hex (nth 0 rgb) (nth 1 rgb) (nth 2 rgb)))
-                   (color-gradient (color-name-to-rgb start) (color-name-to-rgb end) step-number))))
+  (let ((gradiant
+          (-map omni-log--rgb-to-hex
+            (color-gradient (color-name-to-rgb start) (color-name-to-rgb end) step-number))))
     (-flatten (list start gradiant end))))
 
 (provide 'omni-log)
