@@ -23,6 +23,8 @@ matrix:
   fast_finish: true
   allow_failures:
     - env: EVM_EMACS=emacs-git-snapshot-travis-linux-xenial
+    - env: EVM_EMACS=emacs-24.1-travis  # coverage make it crash
+    - env: EVM_EMACS=emacs-24.2-travis
 
 script:
   - emacs --version
