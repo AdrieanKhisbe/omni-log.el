@@ -45,7 +45,7 @@
   (with-current-buffer (omni-log-logger-buffer logger)
     (should (equal (buffer-string) message))))
 
-(unless (s-matches? "^emacs-24\\.[12]-travis$" (getenv "EVM_EMACS"))
+(unless (s-matches? "^emacs-24\\.[12]-travis$" (or (getenv "EVM_EMACS") "local"))
   (require 'undercover)
   (undercover "*.el" "omni-log/*.el"
             (:exclude "*-test.el")

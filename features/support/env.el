@@ -13,7 +13,7 @@
 (add-to-list 'load-path omni-log-root-path)
 
 ;; conditional?
-(unless (s-matches? "^emacs-24\\.[12]-travis$" (getenv "EVM_EMACS"))
+(unless (s-matches? "^emacs-24\\.[12]-travis$" (or (getenv "EVM_EMACS") "local"))
   (require 'undercover)
   (undercover "*.el" "omni-log/*.el"
             (:exclude "*-test.el")
