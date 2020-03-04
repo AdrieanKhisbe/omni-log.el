@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased][unreleased]
 ### Fixed
 - Support for emacs 26
+- Renamed entrypoint alias `log` to `-log` to avoid logarithmic colision
 
 ##### # [0.3.6] - 2017-09-30
 ### Changed

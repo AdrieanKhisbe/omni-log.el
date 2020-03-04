@@ -162,7 +162,8 @@ This is not intended for users."
                 (interactive "s")
                 (apply 'omni-log-message-to-logger logger message args)))))
 
-(defun log (logger-or-name format-string &rest args); rest-args to do
+(defun -log (logger-or-name format-string &rest args); rest-args to do
+  ;; originaly named log, but cause naming collision with native logarithmic log from calc
   "Log to specified LOGGER-OR-NAME given MESSAGE.
 LOGGER-OR-NAME is either a logger or the name of the existing logger"
     (let ((logger (omni-log-logger logger-or-name)))

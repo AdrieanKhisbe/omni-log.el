@@ -91,21 +91,21 @@
 ;; ¤> Logging
 (ert-deftest log-with-name ()
   (with-logger "ansible"
-               (log "ansible" "Yo")
+               (-log "ansible" "Yo")
                (should-log test-logger "Yo\n")))
 
 (ert-deftest log-with-name ()
   (with-logger "ansible"
-               (log 'ansible "Yo")
+               (-log 'ansible "Yo")
                (should-log test-logger "Yo\n")))
 
 (ert-deftest log-with-logger ()
   (with-logger "ansible"
-   (log test-logger "Yolo!")
+   (-log test-logger "Yolo!")
    (should-log test-logger "Yolo!\n")))
 
 (ert-deftest log-no-log ()
-  (should (equal (log "unknown" "Lost Bottle")
+  (should (equal (-log "unknown" "Lost Bottle")
                  "Warning (emacs): There is no logger of name unknown.")))
 
 (ert-deftest can-log-to-created-logger ()

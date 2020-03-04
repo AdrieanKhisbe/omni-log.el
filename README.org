@@ -36,7 +36,7 @@ It enable you to create logger and logger function that print message to the
     (log-ansible "my message") ; will output the message to *ansible* buffer
     (log-ansible "Hello %s" "World")
 
-    (log "ansible" "Coucou :)") ; or (log 'ansible "Coucou :)")
+    (-log "ansible" "Coucou :)") ; or (-log 'ansible "Coucou :)")
   #+END_SRC
 + Modify the logger afterward
   #+BEGIN_SRC emacs-lisp
@@ -63,7 +63,7 @@ Here is the list
 
  #+BEGIN_SRC emacs-lisp
    (setq my-logger (omni-log-create-logger 'my-logger '((prompt . ">x>"))))
-   (log my-logger "See, no function log-my-logger")
+   (-log my-logger "See, no function log-my-logger")
  #+END_SRC
 
 * Installation
